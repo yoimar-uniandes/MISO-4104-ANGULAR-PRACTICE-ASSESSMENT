@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Home } from './home';
+import { Home } from '@features/home/home';
 
 describe('Home', () => {
   beforeEach(async () => {

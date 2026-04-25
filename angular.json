@@ -78,7 +78,7 @@
             "runner": "vitest",
             "watch": false,
             "reporters": ["default"],
-            "include": ["src/**/*.spec.ts"],
+            "include": ["../test/**/*.spec.ts"],
             "setupFiles": ["src/setup-tests.ts"],
             "providersFile": "src/test-providers.ts",
             "coverage": false
