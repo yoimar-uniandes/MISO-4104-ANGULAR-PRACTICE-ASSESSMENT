@@ -11,6 +11,7 @@
     ".": {
       "package-name": "miso-4104-angular-practice-assessment",
       "changelog-path": "CHANGELOG.md",
+      "release-as": "0.1.0",
       "release-search-depth": 400,
       "changelog-sections": [
         { "type": "feat", "section": "Features" },
