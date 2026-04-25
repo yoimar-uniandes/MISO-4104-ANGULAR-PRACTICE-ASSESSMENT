@@ -5,10 +5,9 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "./out-tsc/spec",
-    "rootDir": "./src",
     "tsBuildInfoFile": "./out-tsc/spec/.tsbuildinfo",
     "types": ["vitest/globals", "node"]
   },
-  "include": ["src/**/*.d.ts", "src/**/*.spec.ts", "src/setup-tests.ts", "src/test-providers.ts"],
+  "include": ["test/**/*.ts", "src/setup-tests.ts", "src/test-providers.ts"],
   "references": [{ "path": "./tsconfig.app.json" }]
 }

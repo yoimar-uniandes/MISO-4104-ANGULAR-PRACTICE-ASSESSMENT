@@ -33,7 +33,8 @@
       "@shared/*": ["./src/app/shared/*"],
       "@features/*": ["./src/app/features/*"],
       "@layouts/*": ["./src/app/layouts/*"],
-      "@env/*": ["./src/environments/*"]
+      "@env/*": ["./src/environments/*"],
+      "@test/*": ["./test/*"]
     }
   },
   "angularCompilerOptions": {

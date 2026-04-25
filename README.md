@@ -1,7 +1,9 @@
 # MISO-4104 — Angular Practice Assessment
 
-Aplicación Angular 21 con SSR usada como práctica para el curso **MISO-4104 Arquitectura
-Empresarial Web** de la Maestría en Ingeniería de Software (Universidad de los Andes).
+Aplicación Angular 21 con SSR usada como práctica para el curso
+**MISO-4104 Conceptos básicos de ingeniería de software para la web** de la
+[Maestría en Ingeniería de Software](https://sistemas.uniandes.edu.co/maestrias/miso/virtual/)
+(Universidad de los Andes).
 
 ## Stack
 
@@ -106,9 +108,9 @@ src/
   `Prerender` cuando la ruta sea estática).
 - Los assets se sirven desde `/browser` con `Cache-Control: max-age=1y`.
 
-## CI / Release
+## CI / Release / Deploy
 
-Dos workflows en `.github/workflows/`:
+Tres workflows en `.github/workflows/`:
 
 ### `ci.yml` — calidad
 
@@ -137,6 +139,35 @@ gestionar versionado por **Conventional Commits**:
 2. Al mergear esa PR de release, crea automáticamente:
    - Un tag git (`v0.1.0`, `v0.2.0`, ...).
    - Un GitHub Release con título y notas extraídas del CHANGELOG.
+
+### `deploy-pages.yml` — deploy estático a GitHub Pages
+
+Corre en `push` a `main` (después de cada merge) y al disparar manualmente.
+Pre-renderiza las 3 rutas (Home, Usuarios, Repositorios) en HTML estático y
+publica el resultado en la rama `gh-pages` usando
+[`peaceiris/actions-gh-pages@v4`](https://github.com/peaceiris/actions-gh-pages).
+
+Build:
+
+```bash
+npm run build:gh-pages
+# Genera dist/.../browser/{index.html, usuarios/index.html, repositorios/index.html}
+```
+
+Configuración en `angular.json` → `architect.build.configurations.gh-pages`:
+
+- `outputMode: "static"` — genera HTML pre-renderizado (sin servidor Node)
+- `baseHref: "/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/"` — necesario para
+  servir bajo el path del repo en `username.github.io/repo-name/`
+- Los datos de `Users` y `Repositories` se fetchan **en build time** desde
+  los gists; quedan embebidos en el HTML vía `TransferState`. El navegador
+  no necesita re-fetchearlos.
+
+**Setup inicial (una sola vez)**:
+
+1. Settings → Pages → Source = `Deploy from a branch` · Branch = `gh-pages` · `/ (root)`
+2. Tras el primer deploy exitoso, el sitio queda en
+   `https://<owner>.github.io/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/`
 
 **Convenciones de commit / título de PR** — para que el bump de versión
 funcione hay que usar Conventional Commits:

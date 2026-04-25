@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { Navbar } from '@shared/ui/navbar/navbar';
+import { Footer } from '@shared/ui/footer/footer';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterLink, RouterOutlet],
+  imports: [Navbar, Footer, RouterOutlet],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayout {
-  protected readonly year = new Date().getFullYear();
+  /** Id del `<main>` para futuros skip-to-content / focus management. */
+  protected readonly mainId = 'main-content';
 }

@@ -1,16 +1,102 @@
 /* Estilos globales — CSS puro */
 
 :root {
-  --color-bg: #ffffff;
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --color-accent: #1976d2;
+  /* ── Uniandes brand palette ─────────────────────────────────────────── */
+  --c-uniandes-color-brand-white: #fff;
+  --c-uniandes-color-brand-black: #191916;
 
+  --c-uniandes-color-neutro-90: #4d4d4c;
+  --c-uniandes-color-neutro-80: #616160;
+  --c-uniandes-color-neutro-70: #73726d;
+  --c-uniandes-color-neutro-60: #8a8984;
+  --c-uniandes-color-neutro-50: #bab9b3;
+  --c-uniandes-color-neutro-40: #e0dfda;
+  --c-uniandes-color-neutro-30: #f5f5f2;
+  --c-uniandes-color-neutro-20: #fcfcfa;
+
+  /* Texto sobre fondo claro */
+  --c-uniandes-color-primarytext-lightbg: #1f1f1c;
+  --c-uniandes-color-secondarytext-lightbg: #595959;
+  --c-uniandes-color-disabledtext-lightbg: #747474;
+  --c-uniandes-color-linktext-lightbg: #2442b2;
+  --c-uniandes-color-linktext-visited-lightbg: #551a8b;
+
+  /* Estados */
+  --c-uniandes-color-success-lightbg: #0b7310;
+  --c-uniandes-color-alert-lightbg: #e58617;
+  --c-uniandes-color-error-lightbg: #a9142f;
+
+  /* Fondos */
+  --c-uniandes-color-primarybackground-lightbg: #f7f6f0;
+  --c-uniandes-color-secondarybackground-lightbg: #fcfcfa;
+
+  /* Acentos secundarios (amarillo Uniandes) */
+  --c-uniandes-color-secondary-01-lightbg: #ffe41e;
+  --c-uniandes-color-secondary-02-lightbg: #fff18b;
+
+  /* Background tokens — primary */
+  --c-background-primary-default-lightbg: #191916;
+  --c-background-primary-hover-lightbg: #ffe41e;
+  --c-background-primary-focus-lightbg: #ffe41e;
+  --c-background-primary-disabled-lightbg: #e0dfda;
+
+  /* Background tokens — secondary */
+  --c-background-secondary-hover-lightbg: #bab9b3;
+  --c-background-secondary-focus-lightbg: #bab9b3;
+  --c-background-secondary-selected-lightbg: #4d4d4c;
+
+  /* Background tokens — tertiary */
+  --c-background-tertiary-hover-lightbg: #f5f5f2;
+  --c-background-tertiary-focus-lightbg: #f5f5f2;
+
+  /* Content tokens — primary */
+  --c-content-primary-default-lightbg: #fcfcfa;
+  --c-content-primary-hover-lightbg: #1f1f1c;
+  --c-content-primary-focus-lightbg: #1f1f1c;
+  --c-content-primary-disabled-lightbg: #4d4d4c;
+
+  /* Content tokens — secondary */
+  --c-content-secondary-default-lightbg: #1f1f1c;
+  --c-content-secondary-hover-lightbg: #1f1f1c;
+  --c-content-secondary-focus-lightbg: #1f1f1c;
+  --c-content-secondary-disabled-lightbg: #73726d;
+  --c-content-secondary-selected-lightbg: #fcfcfa;
+
+  /* Content tokens — tertiary */
+  --c-content-tertiary-default-lightbg: #1f1f1c;
+  --c-content-tertiary-hover-lightbg: #1f1f1c;
+  --c-content-tertiary-focus-lightbg: #1f1f1c;
+  --c-content-tertiary-disabled-lightbg: #73726d;
+
+  /* Border tokens — primary */
+  --c-border-primary-hover-lightbg: #191916;
+  --c-border-primary-focus-lightbg: #4d4d4c;
+
+  /* Border tokens — secondary */
+  --c-border-secondary-default-lightbg: #191916;
+  --c-border-secondary-hover-lightbg: #191916;
+  --c-border-secondary-focus-lightbg: #191916;
+  --c-border-secondary-disabled-lightbg: #73726d;
+
+  /* ── Semantic aliases (consumidos por componentes) ──────────────────── */
+  --color-bg: var(--c-uniandes-color-primarybackground-lightbg);
+  --color-surface: var(--c-uniandes-color-secondarybackground-lightbg);
+  --color-text: var(--c-uniandes-color-primarytext-lightbg);
+  --color-text-muted: var(--c-uniandes-color-secondarytext-lightbg);
+  --color-text-disabled: var(--c-uniandes-color-disabledtext-lightbg);
+  --color-border: var(--c-uniandes-color-neutro-40);
+  --color-accent: var(--c-uniandes-color-linktext-lightbg);
+  --color-accent-visited: var(--c-uniandes-color-linktext-visited-lightbg);
+  --color-success: var(--c-uniandes-color-success-lightbg);
+  --color-alert: var(--c-uniandes-color-alert-lightbg);
+  --color-error: var(--c-uniandes-color-error-lightbg);
+
+  /* ── Tipografía y espaciado ─────────────────────────────────────────── */
   --font-sans:
     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   --container-max: 64rem;
+  --navbar-height-base: 4rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -43,6 +129,10 @@ a {
   text-decoration: none;
 }
 
+a:visited {
+  color: var(--color-accent-visited);
+}
+
 a:hover {
   text-decoration: underline;
 }
@@ -56,4 +146,30 @@ h6 {
   margin: 0;
   font-weight: 600;
   line-height: 1.2;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Page-enter animation — usada por el :host de cada feature-page para
+ * dar un efecto de entrada cuando la ruta cambia. Pure CSS, single-shot.
+ * ───────────────────────────────────────────────────────────────────────── */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

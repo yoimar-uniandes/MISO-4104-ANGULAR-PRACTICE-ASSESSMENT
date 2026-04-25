@@ -28,7 +28,7 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": []
+              "allowedHosts": ["localhost", "127.0.0.1"]
             },
             "ssr": {
               "entry": "src/server.ts"
@@ -44,8 +44,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"
@@ -54,12 +54,32 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "gh-pages": {
+              "outputMode": "static",
+              "baseHref": "/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/",
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "allowedHosts": ["localhost", "127.0.0.1"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "MISO-4104-ANGULAR-PRACTICE-ASSESSMENT:build:production"
@@ -78,7 +98,7 @@
             "runner": "vitest",
             "watch": false,
             "reporters": ["default"],
-            "include": ["src/**/*.spec.ts"],
+            "include": ["../test/**/*.spec.ts"],
             "setupFiles": ["src/setup-tests.ts"],
             "providersFile": "src/test-providers.ts",
             "coverage": false

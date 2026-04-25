@@ -1,6 +1,40 @@
-<section class="home">
-  <h1 class="home__title">{{ greeting() }}</h1>
-  <p class="home__subtitle">
-    Bienvenido a <strong>MISO-4104</strong> — la aplicación está corriendo correctamente.
-  </p>
+<section class="hero" aria-labelledby="hero-title">
+  <app-background-graph class="hero__bg" />
+  <div class="hero__inner">
+    <div
+      class="hero__logo-stage"
+      (mousemove)="onLogoMouseMove($event)"
+      (mouseleave)="onLogoMouseLeave()"
+    >
+      <img
+        class="hero__logo"
+        src="favicon.png"
+        alt="Logo GhQuerry"
+        width="160"
+        height="160"
+        [style.transform]="'rotateX(' + tiltX() + 'deg) rotateY(' + tiltY() + 'deg) translateZ(0)'"
+      />
+    </div>
+
+    <p class="hero__eyebrow">Bienvenido a</p>
+    <h1 id="hero-title" class="hero__title">{{ siteName }}</h1>
+
+    <div class="hero__messages" aria-live="polite">
+      <p class="hero__message hero__message--ghquerry">
+        Descubre a los <strong>developers</strong> que admiras y los
+        <strong>repositorios de GitHub</strong> que están dejando huella — todo desde un único
+        lugar.
+      </p>
+      <p class="hero__message hero__message--uniandes">
+        Un proyecto académico construido por estudiantes de la
+        <strong>Maestría en Ingeniería de Software</strong>
+        de la Universidad de los Andes.
+      </p>
+    </div>
+
+    <div class="hero__cta">
+      <a routerLink="/usuarios" class="hero__btn hero__btn--primary">Explorar usuarios</a>
+      <a routerLink="/repositorios" class="hero__btn hero__btn--secondary">Ver repositorios</a>
+    </div>
+  </div>
 </section>

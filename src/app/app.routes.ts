@@ -11,6 +11,29 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadComponent: () => import('./features/home/home').then((m) => m.Home),
         title: 'Inicio',
+        data: {
+          description:
+            'Descubre a los developers que admiras y los repositorios de GitHub que están dejando huella, en un único lugar. GhQuerry, proyecto académico de MISO-4104.',
+        },
+      },
+      {
+        path: 'usuarios',
+        loadComponent: () => import('./features/users/users-page').then((m) => m.UsersPage),
+        title: 'Usuarios',
+        data: {
+          description:
+            'Directorio de developers de la comunidad GhQuerry: explora perfiles, ubicaciones y los repositorios que mantienen.',
+        },
+      },
+      {
+        path: 'repositorios',
+        loadComponent: () =>
+          import('./features/repositories/repositories-page').then((m) => m.RepositoriesPage),
+        title: 'Repositorios',
+        data: {
+          description:
+            'Repositorios destacados de la comunidad GhQuerry: lenguajes, popularidad y descripción de cada proyecto.',
+        },
       },
     ],
   },
