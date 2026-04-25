@@ -12,6 +12,17 @@ export const routes: Routes = [
         loadComponent: () => import('./features/home/home').then((m) => m.Home),
         title: 'Inicio',
       },
+      {
+        path: 'usuarios',
+        loadComponent: () => import('./features/users/users-page').then((m) => m.UsersPage),
+        title: 'Usuarios',
+      },
+      {
+        path: 'repositorios',
+        loadComponent: () =>
+          import('./features/repositories/repositories-page').then((m) => m.RepositoriesPage),
+        title: 'Repositorios',
+      },
     ],
   },
 ];
