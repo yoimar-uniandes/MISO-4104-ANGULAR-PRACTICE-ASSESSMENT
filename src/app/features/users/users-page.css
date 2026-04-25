@@ -1,5 +1,32 @@
 :host {
   display: block;
+  /* Estado inicial explícito → sin FOUC en SSR */
+  opacity: 0;
+  transform: translateY(16px);
+  animation: pageEnter 600ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+.users-page__title,
+.users-page__placeholder {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: fadeUp 600ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+.users-page__title {
+  animation-delay: 100ms;
+}
+.users-page__placeholder {
+  animation-delay: 220ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host,
+  .users-page__title,
+  .users-page__placeholder {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .users-page__title {
