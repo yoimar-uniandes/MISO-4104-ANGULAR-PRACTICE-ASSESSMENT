@@ -32,3 +32,6 @@ Thumbs.db
 /public/assets/generated
 *.min.js
 *.min.css
+
+# Managed by release-please (re-written on every release)
+CHANGELOG.md
