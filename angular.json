@@ -54,6 +54,23 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "gh-pages": {
+              "outputMode": "static",
+              "baseHref": "/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/",
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
