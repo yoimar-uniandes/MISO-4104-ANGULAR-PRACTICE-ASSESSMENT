@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  # Cada merge a main dispara el deploy
+  push:
+    branches: [main]
+  # Permite re-deploy manual desde la UI
+  workflow_dispatch:
+
+# Solo un deploy a la vez por rama; cancela los pendientes que estén corriendo
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write # necesario para que peaceiris/actions-gh-pages haga push a la rama gh-pages
+
+jobs:
+  build-and-deploy:
+    name: Build & deploy to gh-pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build static site (prerender)
+        run: npm run build:gh-pages
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/browser
+          publish_branch: gh-pages
+          # No fork de Jekyll; .nojekyll se crea automáticamente
+          enable_jekyll: false
+          # force_orphan: cada deploy reescribe el branch desde cero (no historia gigante)
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'deploy: ${{ github.sha }}'
