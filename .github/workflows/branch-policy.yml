@@ -1,0 +1,46 @@
+name: Branch Policy
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-source-branch:
+    name: Validate PR source branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Check head ↔ base relationship
+        env:
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          echo "PR: $HEAD → $BASE"
+
+          case "$BASE" in
+            main)
+              # A 'main' sólo se puede mergear desde 'develop' o desde
+              # las PRs auto-generadas por release-please.
+              if [[ "$HEAD" != "develop" && "$HEAD" != release-please--* ]]; then
+                echo "::error::A 'main' sólo se permiten PRs desde 'develop' (o release-please). Rama origen: '$HEAD'."
+                exit 1
+              fi
+              ;;
+            develop)
+              # A 'develop' sólo se permite desde ramas con prefijo 'feature/'.
+              if [[ "$HEAD" != feature/* ]]; then
+                echo "::error::A 'develop' sólo se permiten PRs desde ramas con prefijo 'feature/'. Rama origen: '$HEAD'."
+                exit 1
+              fi
+              ;;
+            *)
+              echo "::warning::PR contra rama no gobernada: '$BASE'."
+              ;;
+          esac
+
+          echo "✓ Origen válido."
