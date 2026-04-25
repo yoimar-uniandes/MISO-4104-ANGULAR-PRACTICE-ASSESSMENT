@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/compare/v0.2.0...v0.2.1) (2026-04-25)
+
+
+### Bug Fixes
+
+* **seo:** point Open Graph and Twitter Cards URLs at the actual GitHub Pages site ([#19](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/issues/19)) ([e568972](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/commit/e568972ffdbccef615fdb56c41ceff641b0c51f9))
+
 ## [0.2.0](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/compare/v0.1.0...v0.2.0) (2026-04-25)
 
 
