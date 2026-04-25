@@ -147,3 +147,29 @@ h6 {
   font-weight: 600;
   line-height: 1.2;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Page-enter animation — usada por el :host de cada feature-page para
+ * dar un efecto de entrada cuando la ruta cambia. Pure CSS, single-shot.
+ * ───────────────────────────────────────────────────────────────────────── */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

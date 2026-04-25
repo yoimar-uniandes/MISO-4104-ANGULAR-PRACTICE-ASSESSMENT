@@ -1,26 +1,323 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * Hero — texto + CTAs + logo GhQuerry con tilt 3D al hover
+ *
+ * El logo vive dentro de .hero__logo-stage (con perspective). Sus eventos
+ * mousemove / mouseleave actualizan dos signals (tiltX, tiltY) que se
+ * aplican al transform del <img>. Una transición CSS suaviza el cambio
+ * entre frames (Mousemove fire ~60Hz; transition rellena cualquier hueco).
+ * ───────────────────────────────────────────────────────────────────────── */
+
 :host {
   display: block;
+  /* Estado inicial explícito → no hay FOUC con SSR. La animación
+     transiciona desde aquí hacia opacity:1 / translateY(0). */
+  opacity: 0;
+  transform: translateY(16px);
+  animation: pageEnter 600ms cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
-.home {
+/* Entrada escalonada de los hijos para un efecto "construyéndose" */
+.hero__logo-stage,
+.hero__eyebrow,
+.hero__title,
+.hero__messages,
+.hero__cta {
+  /* Estado inicial declarado en el style → SSR pinta los elementos invisibles
+     desde el primer frame, sin "saltos" cuando la animación arranca. */
+  opacity: 0;
+  transform: translateY(14px);
+  animation: fadeUp 700ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+.hero__logo-stage {
+  animation-delay: 100ms;
+}
+.hero__eyebrow {
+  animation-delay: 220ms;
+}
+.hero__title {
+  animation-delay: 320ms;
+}
+.hero__messages {
+  animation-delay: 460ms;
+}
+.hero__cta {
+  animation-delay: 600ms;
+}
+
+.hero {
+  --hero-text: var(--color-text);
+  --hero-muted: var(--color-text-muted);
+  --hero-yellow: var(--c-uniandes-color-secondary-01-lightbg, #ffe41e);
+  --hero-dark: var(--c-uniandes-color-brand-black, #191916);
+
+  --hero-cycle: 9s;
+
+  --ease-during: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-post: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 140ms;
+  --dur-mid: 240ms;
+
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  min-height: 60vh;
-  padding: 2rem;
+  width: 100%;
+  min-height: calc(100dvh - var(--layout-navbar-h, 4rem) - 4rem);
+  /* Necesario para anclar el background absoluto al hero, no a la página */
+  position: relative;
+  /* Evita que la animación canvas haga overflow visible si se redimensiona */
+  overflow: hidden;
+}
+
+/* Background decorativo. Por debajo del contenido y EXTENDIDO a todo el
+   ancho del viewport (rompe el max-width del .layout__main constreñido).
+   Truco "full bleed": anchored al centro del hero, 100vw de ancho con
+   margin negativo de 50vw para escapar al viewport. */
+.hero__bg {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.hero__inner {
+  display: flex;
+  flex-direction: column;
+  /* Gap base entre elementos. El título/mensajes/CTAs reciben margin-top
+     extra abajo para crear "ritmo" tipográfico (más aire en transiciones
+     conceptuales: marca → descripción → acción). */
+  gap: clamp(0.5rem, 1vw, 0.875rem);
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
   text-align: center;
+  align-items: center;
+  /* El contenido vive sobre el background */
+  position: relative;
+  z-index: 1;
 }
 
-.home__title {
-  font-size: 2.25rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+/* ── Logo 3D con tilt al hover ───────────────────────────────────────── */
+.hero__logo-stage {
+  /* Perspective controla el "depth" del efecto 3D: valores menores =
+     deformación más pronunciada cuando el logo se inclina. */
+  perspective: 700px;
+  margin-bottom: 0.75rem;
+  /* El padding genera un "hit area" ligeramente mayor que el logo, así el
+     hover responde antes de tocar el borde del PNG. */
+  padding: 0.5rem;
+  cursor: pointer;
 }
 
-.home__subtitle {
+.hero__logo {
+  display: block;
+  /* Logo prominente — desktop ~12rem, mobile ~7rem */
+  width: clamp(7rem, 14vw, 12rem);
+  height: auto;
+  /* Float-like elevation con doble drop-shadow:
+     - una sombra dura cerca para el "peso"
+     - un halo amarillo difuso para integración con la paleta Uniandes */
+  filter: drop-shadow(0 8px 16px rgb(0 0 0 / 0.22)) drop-shadow(0 0 28px rgb(255 228 30 / 0.28));
+  transform-origin: center center;
+  /* Estado por defecto (mouse fuera) → return elástico con overshoot.
+     Larga duración + easing con bounce → la moneda "se asienta" como un
+     péndulo, no un snap abrupto al salir el cursor. */
+  transition:
+    transform 700ms var(--ease-during),
+    filter 350ms var(--ease-post);
+  will-change: transform;
+}
+
+/* Mientras el cursor está sobre el logo: transición rápida lineal para
+   que el tilt SIGA al cursor sin lag perceptible. */
+.hero__logo-stage:hover .hero__logo {
+  transition:
+    transform 80ms linear,
+    filter 240ms var(--ease-post);
+  /* En hover el halo se intensifica → "se enciende" */
+  filter: drop-shadow(0 14px 26px rgb(0 0 0 / 0.32)) drop-shadow(0 0 42px rgb(255 228 30 / 0.6));
+}
+
+/* ── Texto (tamaños aumentados ~50% para llenar viewport) ────────────── */
+.hero__eyebrow {
   margin: 0;
-  font-size: 1rem;
-  color: var(--color-text-muted);
+  font-size: clamp(1rem, 0.85rem + 0.5vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hero-muted);
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(3.5rem, 2.5rem + 5vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: var(--hero-text);
+  background: linear-gradient(transparent 70%, var(--hero-yellow) 70%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  padding: 0 0.1em;
+  width: max-content;
+  max-width: 100%;
+}
+
+.hero__messages {
+  display: grid;
+  width: 100%;
+  max-width: 50rem;
+  /* Espacio extra desde el título → "respira" antes de la descripción */
+  margin-top: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+.hero__message {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: clamp(1.125rem, 0.95rem + 0.6vw, 1.5rem);
+  line-height: 1.55;
+  color: var(--hero-muted);
+}
+.hero__message strong {
+  color: var(--hero-text);
+  font-weight: 600;
+}
+
+.hero__message--ghquerry {
+  animation: hero-msg-ghquerry var(--hero-cycle) ease-in-out infinite;
+}
+.hero__message--uniandes {
+  animation: hero-msg-uniandes var(--hero-cycle) ease-in-out infinite;
+}
+
+@keyframes hero-msg-ghquerry {
+  0%,
+  22% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  28%,
+  72% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  78%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hero-msg-uniandes {
+  0%,
+  22% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  28%,
+  72% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  78%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* ── CTAs ────────────────────────────────────────────────────────────── */
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  /* Espacio extra desde los mensajes → separa la "descripción" de la "acción" */
+  margin-top: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.75rem;
+  border-radius: 0.625rem;
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition:
+    transform var(--dur-mid) var(--ease-post),
+    background-color var(--dur-fast) var(--ease-post),
+    color var(--dur-fast) var(--ease-post),
+    border-color var(--dur-fast) var(--ease-post),
+    box-shadow var(--dur-mid) var(--ease-post);
+}
+
+.hero__btn--primary {
+  background: var(--hero-yellow);
+  color: var(--hero-dark);
+  border-color: var(--hero-dark);
+}
+.hero__btn--primary:hover {
+  background: var(--hero-dark);
+  color: var(--hero-yellow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.25);
+}
+
+.hero__btn--secondary {
+  background: transparent;
+  color: var(--hero-text);
+  border-color: var(--hero-dark);
+}
+.hero__btn--secondary:hover {
+  background: var(--hero-dark);
+  color: var(--hero-yellow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.2);
+}
+
+.hero__btn:active {
+  transform: scale(0.97);
+}
+.hero__btn:focus-visible {
+  outline: 2px solid var(--hero-yellow);
+  outline-offset: 3px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero__title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  :host,
+  .hero__logo-stage,
+  .hero__eyebrow,
+  .hero__title,
+  .hero__messages,
+  .hero__cta,
+  .hero__message--ghquerry,
+  .hero__message--uniandes {
+    /* Si reduced motion está activo, mostramos todo de una vez sin animar */
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .hero__message--ghquerry {
+    opacity: 1;
+  }
+  .hero__message--uniandes {
+    opacity: 0;
+  }
+  .hero__btn,
+  .hero__logo {
+    transition: none;
+  }
 }
