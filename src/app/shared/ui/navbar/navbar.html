@@ -1,0 +1,43 @@
+<nav class="navbar" aria-label="Navegación principal">
+  <div class="navbar__inner">
+    <a class="navbar__brand" routerLink="/" aria-label="Ir a inicio" (click)="closeMenu()">
+      <img class="navbar__logo" [src]="logoSrc" alt="" width="36" height="36" />
+      <span class="navbar__name">{{ siteName }}</span>
+    </a>
+
+    <button
+      type="button"
+      class="navbar__toggle"
+      [class.navbar__toggle--open]="isMenuOpen()"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-controls="navbar-menu"
+      aria-label="Alternar menú"
+      (click)="toggleMenu()"
+    >
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+    </button>
+
+    <ul
+      id="navbar-menu"
+      class="navbar__menu"
+      [class.navbar__menu--open]="isMenuOpen()"
+      [attr.aria-hidden]="!isMenuOpen()"
+    >
+      @for (link of links; track link.path) {
+        <li class="navbar__item">
+          <a
+            [routerLink]="link.path"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            routerLinkActive="navbar__link--current"
+            class="navbar__link"
+            (click)="closeMenu()"
+          >
+            {{ link.label }}
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</nav>

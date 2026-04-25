@@ -1,0 +1,395 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * Navbar — atomic / BEM
+ *
+ * Estructura:
+ *   .navbar                     bloque raíz, posición fija
+ *   .navbar__inner              wrapper interno (max-width)
+ *   .navbar__brand              composite: logo + nombre
+ *     .navbar__logo             imagen
+ *     .navbar__name             texto
+ *   .navbar__toggle             botón hamburguesa (solo móvil)
+ *     .navbar__toggle-bar       cada línea del icono
+ *   .navbar__menu               contenedor de enlaces
+ *     .navbar__item             li
+ *     .navbar__link             a (con underline animado y :active)
+ *
+ * Modificadores:
+ *   .navbar__menu--open
+ *   .navbar__toggle--open
+ *   .navbar__link--current      (lo añade RouterLinkActive)
+ *
+ * Tokens locales (al alcance del bloque) → fácil ajustar sin tocar globales.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+}
+
+.navbar {
+  /* Tokens locales — derivan de la paleta Uniandes */
+  --navbar-bg: var(--c-uniandes-color-brand-black, #191916);
+  --navbar-bg-elevated: #0e0e0c;
+  --navbar-link: var(--c-uniandes-color-neutro-30, #f5f5f2);
+  --navbar-link-muted: var(--c-uniandes-color-neutro-50, #bab9b3);
+  --navbar-link-hover: var(--c-uniandes-color-secondary-01-lightbg, #ffe41e);
+  --navbar-shadow: 0 1px 0 rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.25);
+  --navbar-height: var(--navbar-height-base, 4rem);
+
+  /* Tipografía fluida */
+  --navbar-name-size: clamp(1.125rem, 0.9rem + 0.7vw, 1.5rem);
+  --navbar-link-size: clamp(0.875rem, 0.78rem + 0.3vw, 1rem);
+  --navbar-logo-size: clamp(1.75rem, 1.2rem + 1.2vw, 2.25rem);
+
+  /* Easings y duraciones — 3 fases (pre / during / post) */
+  --ease-pre: cubic-bezier(0.4, 0, 0.6, 1);
+  --ease-during: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-post: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 140ms;
+  --dur-mid: 240ms;
+  --dur-slow: 360ms;
+
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1000;
+  height: var(--navbar-height);
+  background: var(--navbar-bg);
+  color: var(--navbar-link);
+  box-shadow: var(--navbar-shadow);
+  /* Aislamiento de stacking para que las animaciones no afecten al resto */
+  isolation: isolate;
+}
+
+/* ── Wrapper interno ─────────────────────────────────────────────────── */
+.navbar__inner {
+  position: relative;
+  height: 100%;
+  margin: 0 auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+  max-width: 80rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ── Brand (logo + nombre) ───────────────────────────────────────────── */
+.navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: var(--navbar-link);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition:
+    transform var(--dur-mid) var(--ease-post),
+    color var(--dur-fast) var(--ease-post);
+  will-change: transform;
+}
+
+.navbar__brand:hover {
+  color: var(--navbar-link-hover);
+  transform: translateY(-1px);
+}
+
+.navbar__brand:active {
+  transform: scale(0.96);
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-pre);
+}
+
+.navbar__brand:focus-visible {
+  outline: 2px solid var(--navbar-link-hover);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.navbar__logo {
+  width: var(--navbar-logo-size);
+  height: var(--navbar-logo-size);
+  display: block;
+  border-radius: 4px;
+  transition:
+    transform var(--dur-mid) var(--ease-during),
+    filter var(--dur-mid) var(--ease-post);
+}
+
+.navbar__brand:hover .navbar__logo {
+  transform: rotate(-6deg) scale(1.06);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--navbar-link-hover) 60%, transparent));
+}
+
+.navbar__name {
+  font-size: var(--navbar-name-size);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ── Botón hamburguesa (solo visible en móvil) ───────────────────────── */
+.navbar__toggle {
+  display: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border-radius: 8px;
+  transition: background-color var(--dur-fast) var(--ease-post);
+}
+
+.navbar__toggle:hover {
+  background: rgb(255 255 255 / 0.06);
+}
+
+.navbar__toggle:focus-visible {
+  outline: 2px solid var(--navbar-link-hover);
+  outline-offset: 2px;
+}
+
+.navbar__toggle-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--navbar-link);
+  border-radius: 2px;
+  transform-origin: center;
+  transition:
+    transform var(--dur-mid) var(--ease-during),
+    opacity var(--dur-fast) var(--ease-post),
+    background-color var(--dur-fast) var(--ease-post);
+}
+
+.navbar__toggle--open .navbar__toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar__toggle--open .navbar__toggle-bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.navbar__toggle--open .navbar__toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.navbar__toggle--open .navbar__toggle-bar {
+  background: var(--navbar-link-hover);
+}
+
+/* ── Menú (default = desktop horizontal) ─────────────────────────────── */
+.navbar__menu {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar__item {
+  display: block;
+}
+
+/* ── Link (con underline animado + pre/during/post) ──────────────────── */
+.navbar__link {
+  position: relative;
+  display: inline-block;
+  padding: 0.5rem 0.875rem;
+  color: var(--navbar-link);
+  font-size: var(--navbar-link-size);
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 6px;
+  /* PRE: estado base; transiciones cubren el regreso (post) */
+  transition:
+    color var(--dur-fast) var(--ease-post),
+    transform var(--dur-mid) var(--ease-post),
+    background-color var(--dur-fast) var(--ease-post);
+  will-change: transform;
+}
+
+.navbar__link::after {
+  content: '';
+  position: absolute;
+  left: 0.875rem;
+  right: 0.875rem;
+  bottom: 0.25rem;
+  height: 2px;
+  background: var(--navbar-link-hover);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--dur-mid) var(--ease-during);
+}
+
+/* DURING: hover */
+.navbar__link:hover {
+  color: var(--navbar-link-hover);
+  transform: translateY(-1px);
+}
+
+.navbar__link:hover::after {
+  transform: scaleX(1);
+}
+
+/* DURING: click (mousedown) */
+.navbar__link:active {
+  transform: scale(0.96);
+  transition-duration: 80ms;
+  transition-timing-function: var(--ease-pre);
+}
+
+/* DURING: foco accesible */
+.navbar__link:focus-visible {
+  outline: 2px solid var(--navbar-link-hover);
+  outline-offset: 2px;
+}
+
+/* DURING: ruta activa */
+.navbar__link--current {
+  color: var(--navbar-link-hover);
+}
+
+.navbar__link--current::after {
+  transform: scaleX(1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Responsive — escaladas progresivas
+ *
+ * Breakpoints:
+ *   ≥ 1280px  desktop wide (default)
+ *   ≥ 1024px  desktop / tablet landscape
+ *   ≥ 768px   tablet portrait
+ *   < 768px   móvil → hamburguesa + dropdown
+ *   < 480px   móvil compacto
+ * ───────────────────────────────────────────────────────────────────── */
+
+/* Tablet landscape */
+@media (max-width: 1024px) {
+  .navbar {
+    --navbar-height: 3.75rem;
+  }
+
+  .navbar__menu {
+    gap: 0.125rem;
+  }
+
+  .navbar__link {
+    padding-inline: 0.625rem;
+  }
+}
+
+/* Móvil — activa hamburguesa + dropdown */
+@media (max-width: 768px) {
+  .navbar {
+    --navbar-height: 3.5rem;
+  }
+
+  .navbar__toggle {
+    display: inline-flex;
+  }
+
+  /* El menú se vuelve panel desplegable */
+  .navbar__menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem clamp(1rem, 4vw, 1.5rem) 1rem;
+    background: var(--navbar-bg-elevated);
+    box-shadow: 0 12px 24px rgb(0 0 0 / 0.35);
+    overflow: hidden;
+    /* Cerrado por default — colapsa a 0 */
+    max-height: 0;
+    transition: max-height var(--dur-slow) var(--ease-post);
+  }
+
+  .navbar__menu--open {
+    max-height: 24rem;
+  }
+
+  .navbar__item {
+    width: 100%;
+  }
+
+  /* Estado cerrado: enlaces fuera de pantalla a la derecha + invisibles */
+  .navbar__menu .navbar__link {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 0.75rem;
+    border-radius: 8px;
+    transform: translateX(40px);
+    opacity: 0;
+    transition:
+      transform var(--dur-mid) var(--ease-during),
+      opacity var(--dur-mid) var(--ease-post),
+      color var(--dur-fast) var(--ease-post),
+      background-color var(--dur-fast) var(--ease-post);
+  }
+
+  /* Apertura → translate hacia la izquierda (entran), staggered */
+  .navbar__menu--open .navbar__link {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  .navbar__menu--open .navbar__item:nth-child(1) .navbar__link {
+    transition-delay: 60ms;
+  }
+  .navbar__menu--open .navbar__item:nth-child(2) .navbar__link {
+    transition-delay: 110ms;
+  }
+  .navbar__menu--open .navbar__item:nth-child(3) .navbar__link {
+    transition-delay: 160ms;
+  }
+
+  /* Cierre → al quitar --open, el transform vuelve a translateX(40px),
+     que es exactamente "translate a la derecha". Sin delay para salida limpia. */
+
+  .navbar__menu .navbar__link::after {
+    display: none;
+  }
+
+  .navbar__menu .navbar__link:hover {
+    background: rgb(255 255 255 / 0.06);
+    transform: translateX(2px);
+  }
+
+  .navbar__menu .navbar__link--current {
+    background: rgb(255 228 30 / 0.1);
+  }
+}
+
+/* Móvil compacto */
+@media (max-width: 480px) {
+  .navbar__inner {
+    padding-inline: 1rem;
+  }
+
+  .navbar__brand {
+    gap: 0.5rem;
+  }
+}
+
+/* ── Accesibilidad: respetar prefers-reduced-motion ───────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .navbar,
+  .navbar *,
+  .navbar *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .navbar__brand:hover .navbar__logo {
+    transform: none;
+  }
+}

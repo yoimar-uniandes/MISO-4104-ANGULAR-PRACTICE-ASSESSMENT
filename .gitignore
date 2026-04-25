@@ -46,3 +46,6 @@ Thumbs.db
 
 
 .angular
+
+# AI / harness state
+.claude/
