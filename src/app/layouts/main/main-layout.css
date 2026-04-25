@@ -1,20 +1,24 @@
 :host {
+  /* Altura del navbar (responsive). Reasignada en media queries para que
+     `.layout__main` la consuma vía calc() y siempre llene el viewport visible. */
+  --layout-navbar-h: var(--navbar-height-base, 4rem);
+
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
   /* Reservar el espacio del navbar fijo */
-  padding-top: var(--navbar-height-base, 4rem);
+  padding-top: var(--layout-navbar-h);
 }
 
 @media (max-width: 1024px) {
   :host {
-    padding-top: 3.75rem;
+    --layout-navbar-h: 3.75rem;
   }
 }
 
 @media (max-width: 768px) {
   :host {
-    padding-top: 3.5rem;
+    --layout-navbar-h: 3.5rem;
   }
 }
 
@@ -24,4 +28,8 @@
   max-width: var(--container-max, 64rem);
   padding: 2rem clamp(1rem, 3vw, 1.5rem);
   flex: 1;
+  /* Llena el viewport visible (debajo del navbar). El footer queda abajo,
+     visible solo al hacer scroll. `dvh` ajusta la altura cuando el chrome
+     del navegador móvil aparece/desaparece. */
+  min-height: calc(100dvh - var(--layout-navbar-h));
 }

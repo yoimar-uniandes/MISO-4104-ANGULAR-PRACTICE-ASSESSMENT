@@ -243,14 +243,54 @@
 }
 
 @media (max-width: 768px) {
+  /* En móvil todo se apila y se centra horizontal + verticalmente */
   .footer__inner {
     grid-template-columns: 1fr;
     gap: 2rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .footer__brand {
+    align-items: center;
+    max-width: 36ch;
+  }
+
+  /* El logo tiene `align-self: flex-start` por default → forzamos center en móvil */
+  .footer__logo-link {
+    align-self: center;
+  }
+
+  .footer__tagline {
+    max-width: 36ch;
+  }
+
+  .footer__col {
+    align-items: center;
+  }
+
+  /* Con texto centrado, el shift horizontal del hover queda raro → cambio a vertical */
+  .footer__link:hover {
+    transform: translateY(-2px);
+  }
+
+  .footer__link::after {
+    left: 50%;
+    right: auto;
+    width: 100%;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+  }
+
+  .footer__link:hover::after {
+    transform: translateX(-50%) scaleX(1);
   }
 
   .footer__bottom {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: 0.25rem;
   }
 }
