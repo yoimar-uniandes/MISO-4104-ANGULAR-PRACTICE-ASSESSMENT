@@ -24,17 +24,18 @@ jobs:
 
           case "$BASE" in
             main)
-              # A 'main' sólo se puede mergear desde 'develop' o desde
-              # las PRs auto-generadas por release-please.
-              if [[ "$HEAD" != "develop" && "$HEAD" != release-please--* ]]; then
-                echo "::error::A 'main' sólo se permiten PRs desde 'develop' (o release-please). Rama origen: '$HEAD'."
+              # A 'main' sólo se puede mergear desde 'develop', 'hotfix/*'
+              # (urgentes) o las PRs auto-generadas por release-please.
+              if [[ "$HEAD" != "develop" && "$HEAD" != hotfix/* && "$HEAD" != release-please--* ]]; then
+                echo "::error::A 'main' sólo se permiten PRs desde 'develop', 'hotfix/*' o release-please. Rama origen: '$HEAD'."
                 exit 1
               fi
               ;;
             develop)
-              # A 'develop' sólo se permite desde ramas con prefijo 'feature/'.
-              if [[ "$HEAD" != feature/* ]]; then
-                echo "::error::A 'develop' sólo se permiten PRs desde ramas con prefijo 'feature/'. Rama origen: '$HEAD'."
+              # A 'develop' se permite desde 'feature/*' (cambios normales) o
+              # 'hotfix/*' (sincronizar el hotfix de vuelta a develop).
+              if [[ "$HEAD" != feature/* && "$HEAD" != hotfix/* ]]; then
+                echo "::error::A 'develop' sólo se permiten PRs desde 'feature/*' o 'hotfix/*'. Rama origen: '$HEAD'."
                 exit 1
               fi
               ;;
