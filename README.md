@@ -106,9 +106,14 @@ src/
   `Prerender` cuando la ruta sea estática).
 - Los assets se sirven desde `/browser` con `Cache-Control: max-age=1y`.
 
-## CI
+## CI / Release
 
-Workflow en `.github/workflows/ci.yml` — corre en `push` y `pull_request` a `main`:
+Dos workflows en `.github/workflows/`:
+
+### `ci.yml` — calidad
+
+Corre en `pull_request` a `main` (y como sanity check en `push` a `main`).
+Pasos:
 
 1. `npm ci`
 2. `format:check`
@@ -116,6 +121,116 @@ Workflow en `.github/workflows/ci.yml` — corre en `push` y `pull_request` a `m
 4. `typecheck`
 5. `test:coverage` (artefacto subido a GitHub)
 6. `build`
+
+El job se llama **`Lint, typecheck, test, build`** — ése es el nombre que aparece
+como _required status check_ en la regla de protección de `main`.
+
+### `release.yml` — tag + GitHub Release
+
+Corre en `push` a `main` (lo que sólo puede ocurrir vía merge de PR, porque la
+rama está protegida). Usa
+[`release-please`](https://github.com/googleapis/release-please-action) para
+gestionar versionado por **Conventional Commits**:
+
+1. Cuando lleguen commits a `main`, abre/actualiza una PR de release que bumpea
+   `package.json#version` y regenera `CHANGELOG.md`.
+2. Al mergear esa PR de release, crea automáticamente:
+   - Un tag git (`v0.1.0`, `v0.2.0`, ...).
+   - Un GitHub Release con título y notas extraídas del CHANGELOG.
+
+**Convenciones de commit / título de PR** — para que el bump de versión
+funcione hay que usar Conventional Commits:
+
+| Prefijo                         | Bump  | Aparece en CHANGELOG     |
+| ------------------------------- | ----- | ------------------------ |
+| `feat:`                         | minor | Features                 |
+| `fix:`                          | patch | Bug Fixes                |
+| `perf:`                         | patch | Performance Improvements |
+| `refactor:`                     | —     | Refactor                 |
+| `docs:`                         | —     | Documentation            |
+| `build:`                        | —     | Build System             |
+| `feat!:` o `BREAKING CHANGE:`   | major | sección destacada        |
+| `test:` `ci:` `chore:` `style:` | —     | ocultos                  |
+
+> Recomendado: configurar la opción del repo "**Allow squash merging**" + "**Default
+> to PR title for squash merge commit message**" para que el título del PR se
+> propague como commit en `main` y release-please lo lea.
+
+## Modelo de ramas
+
+```
+                       ┌──────────────┐         ┌─────────┐         ┌──────┐
+                       │  feature/*   │ ──PR──▶ │ develop │ ──PR──▶ │ main │
+                       └──────────────┘         └─────────┘         └──────┘
+                                                                       │
+                                                                       ▼
+                                                              release-please tag
+                                                              + GitHub Release
+```
+
+Reglas:
+
+- **`main`**: rama de release. Sólo recibe PRs desde `develop` (o desde las
+  PRs auto-generadas por release-please).
+- **`develop`**: rama de integración. Sólo recibe PRs desde ramas con prefijo
+  **`feature/*`**.
+- **`feature/<descripcion>`**: rama de trabajo. Cualquier rama distinta a
+  `main` y `develop` debe usar este prefijo.
+
+La política la aplican dos workflows en `.github/workflows/`:
+
+- **`ci.yml`** corre el pipeline de calidad (`format:check`, `lint`,
+  `typecheck`, `test:coverage`, `build`) en cada PR a `main` o `develop`.
+- **`branch-policy.yml`** valida que la rama de origen sea coherente con la
+  base. Falla el check si alguien abre, por ejemplo, una PR `feature/x → main`
+  o `random-branch → develop`.
+
+## Protección de ramas
+
+Las reglas se aplican vía la API de GitHub (no se versionan en el repo). Hay un
+script de bootstrap que protege **`main`** y **`develop`** simultáneamente:
+
+```bash
+gh auth login                                       # autenticación previa
+./.github/scripts/setup-branch-protection.sh        # detecta el repo
+# o:
+./.github/scripts/setup-branch-protection.sh OWNER/REPO
+```
+
+Reglas aplicadas a ambas ramas (`main` y `develop`):
+
+- Push directo **bloqueado** — sólo vía PR.
+- 1 approval requerida; _stale reviews_ descartadas en cada nuevo push.
+- _Required status checks_:
+  - `Lint, typecheck, test, build` (de `ci.yml`)
+  - `Validate PR source branch` (de `branch-policy.yml`)
+- Branches deben estar al día con la base antes de mergear (_strict_).
+- _Conversation resolution_ obligatorio.
+- _Linear history_ (sin merge commits → usar squash o rebase).
+- Sin force-push, sin deletion.
+- `enforce_admins: false` (admins pueden bypassear en emergencia).
+
+> Editable en `https://github.com/<owner>/<repo>/settings/branches` o re-ejecutando el script.
+
+### Crear una feature
+
+```bash
+git switch develop
+git pull
+git switch -c feature/login-google
+# ... commits con Conventional Commits ...
+git push -u origin feature/login-google
+# Abrir PR en GitHub → base: develop, compare: feature/login-google
+```
+
+### Promover a release
+
+```bash
+# Cuando develop esté listo para release:
+# Abrir PR en GitHub → base: main, compare: develop
+# Tras merge, release-please abre/actualiza la PR de release que mergea
+# CHANGELOG + bump de versión en main; al mergearla aparece el tag.
+```
 
 ## Docker
 
