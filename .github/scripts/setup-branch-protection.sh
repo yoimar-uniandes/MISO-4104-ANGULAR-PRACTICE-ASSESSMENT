@@ -58,6 +58,14 @@ ensure_remote_branch() {
   git push -u origin "${branch}"
 }
 
+enable_actions_pr_creation() {
+  echo "▶ Habilitando que GitHub Actions abra PRs (necesario para release-please)..."
+  gh api -X PUT "repos/${REPO}/actions/permissions/workflow" \
+    -f default_workflow_permissions=read \
+    -F can_approve_pull_request_reviews=true >/dev/null
+  echo "✓ Permiso de Actions actualizado."
+}
+
 apply_protection() {
   local branch="$1"
 
@@ -97,6 +105,7 @@ JSON
   echo "✓ ${branch} protegida."
 }
 
+enable_actions_pr_creation
 apply_protection main
 apply_protection develop
 
