@@ -125,6 +125,12 @@ Pasos:
 El job se llama **`Lint, typecheck, test, build`** — ése es el nombre que aparece
 como _required status check_ en la regla de protección de `main`.
 
+> **Nota sobre el primer release:** `release-please-config.json` tiene
+> `release-as: "0.1.0"` para anclar la primera versión. Tras el primer release
+> exitoso (`v0.1.0`), **quitar** ese campo (PR de seguimiento) para que las
+> versiones siguientes se calculen normalmente desde los Conventional Commits.
+> La versión `1.0.0` se reserva para el release final.
+
 ### `release.yml` — tag + GitHub Release
 
 Corre en `push` a `main` (lo que sólo puede ocurrir vía merge de PR, porque la
