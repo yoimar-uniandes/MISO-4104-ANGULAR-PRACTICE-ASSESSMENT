@@ -1,7 +1,9 @@
 # MISO-4104 — Angular Practice Assessment
 
-Aplicación Angular 21 con SSR usada como práctica para el curso **MISO-4104 Arquitectura
-Empresarial Web** de la Maestría en Ingeniería de Software (Universidad de los Andes).
+Aplicación Angular 21 con SSR usada como práctica para el curso
+**MISO-4104 Conceptos básicos de ingeniería de software para la web** de la
+[Maestría en Ingeniería de Software](https://sistemas.uniandes.edu.co/maestrias/miso/virtual/)
+(Universidad de los Andes).
 
 ## Stack
 

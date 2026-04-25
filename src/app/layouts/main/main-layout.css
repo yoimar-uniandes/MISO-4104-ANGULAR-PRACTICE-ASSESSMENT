@@ -23,13 +23,5 @@
   width: 100%;
   max-width: var(--container-max, 64rem);
   padding: 2rem clamp(1rem, 3vw, 1.5rem);
-}
-
-.layout__footer {
-  border-top: 1px solid var(--color-border);
-  padding: 1rem 1.5rem;
-  margin-top: auto;
-  text-align: center;
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
+  flex: 1;
 }

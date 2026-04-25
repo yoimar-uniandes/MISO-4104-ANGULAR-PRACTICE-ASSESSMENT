@@ -1,7 +1,7 @@
 <app-navbar />
 
-<main class="layout__main">
+<main [id]="mainId" class="layout__main">
   <router-outlet />
 </main>
 
-<footer class="layout__footer">© {{ year }} Universidad de los Andes — MISO-4104</footer>
+<app-footer />

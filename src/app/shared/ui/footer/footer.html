@@ -1,0 +1,57 @@
+<footer class="footer" aria-labelledby="footer-heading">
+  <h2 id="footer-heading" class="footer__a11y-title">Pie de página</h2>
+
+  <div class="footer__inner">
+    <section class="footer__brand">
+      <a class="footer__logo-link" href="https://uniandes.edu.co" target="_blank" rel="noopener">
+        <img
+          class="footer__logo"
+          [src]="logoSrc"
+          alt="Universidad de los Andes"
+          width="200"
+          height="60"
+          loading="lazy"
+        />
+      </a>
+      <p class="footer__tagline">{{ tagline }}</p>
+    </section>
+
+    <nav class="footer__col" aria-label="Enlaces internos">
+      <h3 class="footer__col-title">{{ internal.title }}</h3>
+      <ul class="footer__list">
+        @for (link of internal.items; track link.path) {
+          <li class="footer__item">
+            <a [routerLink]="link.path" class="footer__link">{{ link.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <nav class="footer__col" aria-label="Enlaces externos">
+      <h3 class="footer__col-title">{{ external.title }}</h3>
+      <ul class="footer__list">
+        @for (link of external.items; track link.href) {
+          <li class="footer__item">
+            <a
+              [href]="link.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer__link footer__link--external"
+            >
+              {{ link.label }}
+              <span class="footer__external-icon" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="footer__bottom">
+    <p class="footer__copyright">
+      © {{ year }} {{ siteName }} · MISO-4104 Conceptos básicos de ingeniería de software para la
+      web
+    </p>
+    <p class="footer__legal">Universidad de los Andes · Bogotá, Colombia</p>
+  </div>
+</footer>

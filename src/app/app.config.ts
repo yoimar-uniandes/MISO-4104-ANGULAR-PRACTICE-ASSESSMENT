@@ -3,12 +3,13 @@ import {
   ErrorHandler,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
+import { PreloadAllModules, provideRouter, TitleStrategy, withPreloading } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
 import { GlobalErrorHandler } from './core/providers/global-error-handler';
+import { AppTitleStrategy } from './core/providers/app-title-strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,5 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptorsFromDi()),
     provideClientHydration(withEventReplay()),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    { provide: TitleStrategy, useClass: AppTitleStrategy },
   ],
 };
