@@ -13,12 +13,12 @@ Empresarial Web** de la Maestría en Ingeniería de Software (Universidad de los
 | Lenguaje       | TypeScript 5.9 (modo estricto + `noUncheckedIndexedAccess`) |
 | Tests          | Vitest 4 + jsdom (`@angular/build:unit-test`)               |
 | Lint / formato | ESLint 10 (flat config) + angular-eslint 21 + Prettier 3    |
-| Runtime        | Node ≥ 22.12.0, npm 11.12.1                                 |
+| Runtime        | Node ≥ 22.13.0 (CI usa 22.18.0)                             |
 
 ## Requisitos
 
-- Node `>= 22.12.0`
-- npm `11.12.1` (definido en `engines` y `packageManager` del `package.json`)
+- Node `>= 22.13.0` (la versión 22.12 no satisface el `engines` de ESLint 10)
+- npm `>= 10` (no hay pin específico)
 
 ## Puesta en marcha
 

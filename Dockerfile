@@ -10,7 +10,7 @@
 #   - production   : runtime mínimo — sólo node + dist bundleado
 # ─────────────────────────────────────────────────────────────────────────────
 
-ARG NODE_VERSION=22.12.0
+ARG NODE_VERSION=22.18.0
 
 # ── Base ────────────────────────────────────────────────────────────────────
 FROM node:${NODE_VERSION}-alpine AS base
