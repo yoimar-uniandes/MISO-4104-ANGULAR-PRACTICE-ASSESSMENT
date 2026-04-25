@@ -1,0 +1,82 @@
+# Auto-detect text files and normalize line endings on commit (LF in repo).
+* text=auto eol=lf
+
+# ── Source code ────────────────────────────────────────────────────────────
+*.ts        text eol=lf
+*.tsx       text eol=lf
+*.js        text eol=lf
+*.jsx       text eol=lf
+*.mjs       text eol=lf
+*.cjs       text eol=lf
+*.json      text eol=lf
+*.html      text eol=lf
+*.css       text eol=lf
+*.scss      text eol=lf
+*.sass      text eol=lf
+*.less      text eol=lf
+*.md        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.toml      text eol=lf
+*.txt       text eol=lf
+*.svg       text eol=lf
+
+# ── Configuration / dotfiles ───────────────────────────────────────────────
+.editorconfig    text eol=lf
+.gitignore       text eol=lf
+.gitattributes   text eol=lf
+.prettierrc      text eol=lf
+.prettierignore  text eol=lf
+.eslintignore    text eol=lf
+.npmrc           text eol=lf
+.nvmrc           text eol=lf
+
+# ── Shell / scripts ────────────────────────────────────────────────────────
+*.sh    text eol=lf
+*.bash  text eol=lf
+
+# Windows-specific scripts: force CRLF.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# ── Binary assets (no diff, no text conversion) ────────────────────────────
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.avif  binary
+*.bmp   binary
+*.tiff  binary
+*.pdf   binary
+*.zip   binary
+*.gz    binary
+*.tar   binary
+*.7z    binary
+*.rar   binary
+*.mp3   binary
+*.mp4   binary
+*.mov   binary
+*.webm  binary
+*.ogg   binary
+*.wav   binary
+*.flac  binary
+
+# ── Fonts ──────────────────────────────────────────────────────────────────
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.otf    binary
+*.eot    binary
+
+# ── Lock files: treat as generated (no diff noise, mark in PRs) ────────────
+package-lock.json  -diff linguist-generated=true
+yarn.lock          -diff linguist-generated=true
+pnpm-lock.yaml     -diff linguist-generated=true
+
+# ── GitHub linguist tweaks ─────────────────────────────────────────────────
+*.spec.ts   linguist-language=TypeScript
+/dist/**    linguist-generated=true
+/coverage/** linguist-generated=true

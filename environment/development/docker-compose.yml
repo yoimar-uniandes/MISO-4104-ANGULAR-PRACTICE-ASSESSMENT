@@ -1,0 +1,30 @@
+# Compose — DEVELOPMENT
+# Uso:
+#   cd environment/development
+#   docker compose up --build
+#
+# Bind mount monta el repo → /app dentro del contenedor, y el volumen anónimo
+# sobre /app/node_modules evita que las deps del host pisen las del contenedor.
+# El dev-server de Angular detecta cambios y recompila al vuelo (HMR).
+
+name: miso4104-dev
+
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: development
+    image: miso4104-angular:dev
+    container_name: miso4104-angular-dev
+    env_file:
+      - .env
+    ports:
+      - '${PORT:-4200}:4200'
+    volumes:
+      - ../..:/app
+      - /app/node_modules
+    command: npm start -- --host 0.0.0.0 --poll 1000
+    stdin_open: true
+    tty: true
+    restart: unless-stopped

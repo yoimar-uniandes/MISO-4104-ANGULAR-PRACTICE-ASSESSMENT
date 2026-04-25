@@ -1,0 +1,66 @@
+name: Bug
+description: Reportar un defecto o comportamiento inesperado
+title: 'BUG: '
+labels: ['bug']
+assignees: []
+body:
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción del bug
+      description: Resumen claro y conciso del problema.
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Pasos para reproducir
+      placeholder: |
+        1. Ir a '...'
+        2. Hacer clic en '...'
+        3. Ver el error
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamiento actual
+    validations:
+      required: true
+
+  - type: input
+    id: entorno
+    attributes:
+      label: Entorno
+      placeholder: Ej. Chrome 130 / Windows 11 / dev
+    validations:
+      required: true
+
+  - type: textarea
+    id: capturas
+    attributes:
+      label: Capturas de pantalla / logs
+      description: Adjunta imágenes, stack traces o logs si ayudan a entender el problema.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severidad
+    attributes:
+      label: Severidad
+      options:
+        - Crítica (bloquea producción)
+        - Alta (funcionalidad principal afectada)
+        - Media (workaround disponible)
+        - Baja (cosmético)
+    validations:
+      required: true

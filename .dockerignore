@@ -1,0 +1,44 @@
+# Build outputs
+dist
+out-tsc
+*.tsbuildinfo
+.angular
+
+# Dependencies (se reinstalan dentro de la imagen)
+node_modules
+
+# Coverage / reports
+coverage
+__screenshots__
+
+# Tests / dev tooling (no necesarios en build de imagen)
+**/*.spec.ts
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE / OS
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+
+# CI / infra
+.github
+environment
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Claude / AI
+.claude
+
+# Markdown (no necesario para el build)
+README.md

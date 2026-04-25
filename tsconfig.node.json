@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./out-tsc/node",
+    "rootDir": "./",
+    "tsBuildInfoFile": "./out-tsc/node/.tsbuildinfo",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "isolatedModules": true,
+    "allowJs": true,
+    "checkJs": false,
+    "emitDeclarationOnly": true
+  },
+  "include": ["vitest.config.ts"]
+}

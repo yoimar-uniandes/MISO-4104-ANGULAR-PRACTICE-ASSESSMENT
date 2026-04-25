@@ -1,0 +1,38 @@
+name: Tarea
+description: Crear una tarea basada en HU
+title: 'TAREA: '
+labels: ['task']
+assignees: []
+body:
+  - type: input
+    id: hu
+    attributes:
+      label: Historia de Usuario
+      description: Nombre de la HU que esta tarea detalla
+      placeholder: Ej. HU-042 Login con Google
+    validations:
+      required: true
+
+  - type: input
+    id: responsable
+    attributes:
+      label: Responsable
+      placeholder: '@usuario'
+    validations:
+      required: true
+
+  - type: input
+    id: fecha-entrega
+    attributes:
+      label: Fecha de entrega
+      placeholder: YYYY-MM-DD
+    validations:
+      required: true
+
+  - type: input
+    id: tiempo-estimado
+    attributes:
+      label: Tiempo estimado
+      placeholder: Ej. 4h, 2d
+    validations:
+      required: true

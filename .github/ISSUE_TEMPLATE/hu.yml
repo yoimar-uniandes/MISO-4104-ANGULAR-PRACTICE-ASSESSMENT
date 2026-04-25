@@ -1,0 +1,67 @@
+name: Historia de Usuario
+description: Crear una nueva Historia de Usuario (HU)
+title: 'HU: '
+labels: ['user-story']
+assignees: []
+body:
+  - type: input
+    id: id-hu
+    attributes:
+      label: ID de la HU
+      placeholder: Ej. HU-042
+    validations:
+      required: true
+
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción
+      description: Como [rol], quiero [acción], para [beneficio].
+      placeholder: Como usuario, quiero iniciar sesión con Google, para no tener que recordar otra contraseña.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      description: Lista de criterios verificables (Gherkin opcional).
+      placeholder: |
+        - Dado que ... cuando ... entonces ...
+        - ...
+    validations:
+      required: true
+
+  - type: input
+    id: prioridad
+    attributes:
+      label: Prioridad
+      placeholder: Alta / Media / Baja
+    validations:
+      required: true
+
+  - type: input
+    id: estimacion
+    attributes:
+      label: Estimación
+      description: Story points o tiempo estimado
+      placeholder: Ej. 5 SP, 2d
+    validations:
+      required: true
+
+  - type: input
+    id: sprint
+    attributes:
+      label: Sprint
+      placeholder: Ej. Sprint 3
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencias
+    attributes:
+      label: Dependencias
+      description: Otras HUs, tareas o sistemas externos de los que depende.
+      placeholder: HU-040, HU-041
+    validations:
+      required: false
