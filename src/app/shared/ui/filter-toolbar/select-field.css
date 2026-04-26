@@ -1,0 +1,49 @@
+:host {
+  display: inline-flex;
+  flex: 1 1 12rem;
+  min-width: 10rem;
+}
+
+.select-field__wrap {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+}
+
+.select-field__control {
+  width: 100%;
+  height: 2.25rem;
+  padding: 0 2rem 0 0.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.select-field__control:hover {
+  border-color: var(--c-uniandes-color-neutro-50);
+}
+
+.select-field__control:focus-visible {
+  outline: none;
+  border-color: var(--c-border-secondary-default-lightbg);
+  box-shadow: 0 0 0 2px var(--c-uniandes-color-secondary-01-lightbg);
+}
+
+.select-field__chevron {
+  position: absolute;
+  right: 0.625rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--c-uniandes-color-neutro-70);
+  pointer-events: none;
+}

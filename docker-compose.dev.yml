@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Compose de desarrollo — levanta el stage `development` del Dockerfile y
+# monta el código fuente para HMR. Uso:
+#   docker compose -f docker-compose.dev.yml up --build
+# Luego abre http://localhost:4200 para ver los cambios en /usuarios.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: ghquerry-dev
+    container_name: ghquerry-dev
+    ports:
+      - '4200:4200'
+    environment:
+      # Polling del watcher dentro del contenedor (necesario en WSL/Docker
+      # Desktop donde los eventos inotify no atraviesan el bind mount).
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: 'true'
+      WATCHPACK_POLLING: 'true'
+    volumes:
+      # Bind mount del proyecto para hot-reload.
+      - .:/app
+      # node_modules y caches viven en volúmenes nombrados → sobreescriben el
+      # bind mount y evitan choques entre node_modules del host (Linux/WSL) y
+      # los del contenedor.
+      - ghquerry_node_modules:/app/node_modules
+      - ghquerry_angular_cache:/app/.angular
+    init: true
+    stdin_open: true
+    tty: true
+
+volumes:
+  ghquerry_node_modules:
+  ghquerry_angular_cache:

@@ -1,0 +1,45 @@
+:host {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.chips-field__chip {
+  display: inline-flex;
+  align-items: center;
+  height: 2.25rem;
+  padding: 0 0.875rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background: var(--c-uniandes-color-neutro-30);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.chips-field__chip:hover {
+  background: var(--c-uniandes-color-neutro-40);
+  border-color: var(--c-uniandes-color-neutro-50);
+}
+
+.chips-field__chip:focus-visible {
+  outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
+  outline-offset: 2px;
+}
+
+.chips-field__chip--active {
+  background: var(--c-background-primary-default-lightbg);
+  color: var(--c-content-primary-default-lightbg);
+  border-color: var(--c-background-primary-default-lightbg);
+}
+
+.chips-field__chip--active:hover {
+  background: var(--c-background-primary-default-lightbg);
+  border-color: var(--c-background-primary-default-lightbg);
+}
