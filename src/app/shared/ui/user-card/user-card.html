@@ -1,0 +1,71 @@
+<article class="user-card" [attr.aria-labelledby]="'user-' + user().id + '-name'">
+  <header class="user-card__header">
+    @if (avatarFailed()) {
+      <div class="user-card__avatar user-card__avatar--initials" aria-hidden="true">
+        {{ initials() }}
+      </div>
+    } @else {
+      <img
+        class="user-card__avatar"
+        [src]="user().avatarUrl"
+        [alt]="'Avatar de ' + user().name"
+        width="64"
+        height="64"
+        loading="lazy"
+        decoding="async"
+        (error)="onAvatarError()"
+      />
+    }
+    <div class="user-card__identity">
+      <h3 [id]="'user-' + user().id + '-name'" class="user-card__name">{{ user().name }}</h3>
+      <p class="user-card__username">&#64;{{ user().username }}</p>
+    </div>
+    <span
+      class="user-card__role user-card__role--{{ user().role }}"
+      [attr.aria-label]="'Rol: ' + roleLabel()"
+    >
+      {{ roleLabel() }}
+    </span>
+  </header>
+
+  <dl class="user-card__meta">
+    <div class="user-card__meta-row">
+      <dt class="user-card__meta-label">Ubicación</dt>
+      <dd class="user-card__meta-value">
+        <svg class="user-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"
+            fill="currentColor"
+          />
+        </svg>
+        <span>{{ user().location }}</span>
+      </dd>
+    </div>
+    <div class="user-card__meta-row">
+      <dt class="user-card__meta-label">Email</dt>
+      <dd class="user-card__meta-value">
+        <svg class="user-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 4.4V18h16V8.4l-8 5-8-5z"
+            fill="currentColor"
+          />
+        </svg>
+        <a class="user-card__email" [href]="'mailto:' + user().email" [title]="user().email">
+          {{ user().email }}
+        </a>
+      </dd>
+    </div>
+  </dl>
+
+  <footer class="user-card__footer">
+    <span class="user-card__repos" [class.user-card__repos--empty]="user().repoIds.length === 0">
+      <svg class="user-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          d="M7 3a2 2 0 0 0-2 2v15a1 1 0 0 0 1.5.87L12 17.6l5.5 3.27A1 1 0 0 0 19 20V5a2 2 0 0 0-2-2H7zm0 2h10v13.27l-4.5-2.68a1 1 0 0 0-1 0L7 18.27V5z"
+          fill="currentColor"
+        />
+      </svg>
+      {{ repoLabel() }}
+    </span>
+  </footer>
+</article>

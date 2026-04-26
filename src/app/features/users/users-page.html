@@ -1,6 +1,51 @@
-<section class="users-page">
-  <h1 class="users-page__title">{{ title }}</h1>
-  <p class="users-page__placeholder">
-    Implementar componente para listar usuarios. HU pendiente de iteraciones posteriores.
-  </p>
+<section class="users-page" aria-labelledby="users-page-title">
+  <div class="users-page__main">
+    <header class="users-page__header">
+      <h1 id="users-page-title" class="users-page__title">{{ title }}</h1>
+      @if (!isLoading()) {
+        <p class="users-page__subtitle" aria-live="polite">
+          {{ total() }} usuarios en la comunidad
+        </p>
+      }
+    </header>
+
+    @if (isLoading()) {
+      <ul class="users-grid" aria-label="Cargando usuarios" aria-busy="true">
+        @for (slot of skeletonSlots; track slot) {
+          <li class="users-grid__item">
+            <div class="user-skeleton" aria-hidden="true">
+              <div class="user-skeleton__avatar"></div>
+              <div class="user-skeleton__lines">
+                <div class="user-skeleton__line user-skeleton__line--lg"></div>
+                <div class="user-skeleton__line user-skeleton__line--md"></div>
+                <div class="user-skeleton__line user-skeleton__line--sm"></div>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else if (paged(); as pageUsers) {
+      @if (pageUsers.length === 0) {
+        <p class="users-page__empty">No hay usuarios para mostrar.</p>
+      } @else {
+        <ul class="users-grid">
+          @for (user of pageUsers; track user.id) {
+            <li class="users-grid__item">
+              <app-user-card [user]="user" />
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+
+  @if (!isLoading() && total() > pageSize) {
+    <app-paginator
+      class="users-page__paginator"
+      [total]="total()"
+      [pageSize]="pageSize"
+      [page]="page()"
+      (pageChange)="onPageChange($event)"
+    />
+  }
 </section>
