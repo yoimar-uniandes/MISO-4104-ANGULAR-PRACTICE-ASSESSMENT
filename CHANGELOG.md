@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/compare/v0.2.1...v0.3.0) (2026-04-26)
+
+
+### Features
+
+* **users:** listado de usuarios con filtros, paginación y cards interactivas ([aa0de70](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/commit/aa0de707a7f5d260b8b42798c72ea52f949be1e8))
+* **users:** paginated user listing with responsive cards ([d8649ad](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/commit/d8649ad4ec4c0394cd7ad81c4f4e984d653519c7))
+* **users:** reusable filter toolbar, viewport-anchored paginator, polished card UX ([1445ecd](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/commit/1445ecd93cad8525eb3362806c743b3ae267688d))
+
 ## [0.2.1](https://github.com/yoimar-uniandes/MISO-4104-ANGULAR-PRACTICE-ASSESSMENT/compare/v0.2.0...v0.2.1) (2026-04-25)
 
 
