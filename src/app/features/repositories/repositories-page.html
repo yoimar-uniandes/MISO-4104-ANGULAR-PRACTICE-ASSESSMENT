@@ -1,6 +1,96 @@
-<section class="repos-page">
-  <h1 class="repos-page__title">{{ title }}</h1>
-  <p class="repos-page__placeholder">
-    Implementar componente para listar repositorios. HU pendiente de iteraciones posteriores.
-  </p>
+<section class="repos-page" aria-labelledby="repos-page-title">
+  <header class="repos-page__header">
+    <h1 id="repos-page-title" class="repos-page__title">{{ title }}</h1>
+    @if (!isLoading()) {
+      <p class="repos-page__subtitle" aria-live="polite">
+        @if (hasActiveFilters()) {
+          {{ total() }} de {{ grandTotal() }} repositorios coinciden
+        } @else {
+          {{ total() }} repositorios en la comunidad
+        }
+      </p>
+    }
+  </header>
+
+  <app-filter-toolbar
+    class="repos-page__toolbar"
+    ariaLabel="Filtros de repositorios"
+    [hasActive]="hasActiveFilters()"
+    (clear)="onReset()"
+  >
+    <app-search-input
+      ariaLabel="Buscar por nombre o descripción"
+      placeholder="Buscar por nombre o descripción…"
+      [value]="query()"
+      (valueChange)="query.set($event)"
+    />
+    <app-select-field
+      ariaLabel="Filtrar por lenguaje"
+      placeholder="Todos los lenguajes"
+      [options]="languageOptions()"
+      [value]="language()"
+      (valueChange)="language.set($event)"
+    />
+    <app-select-field
+      ariaLabel="Filtrar por propietario"
+      placeholder="Todos los propietarios"
+      [options]="ownerOptions()"
+      [value]="ownerIdStr()"
+      (valueChange)="ownerIdStr.set($event)"
+    />
+    <app-chips-field
+      ariaLabel="Filtrar por popularidad"
+      [options]="popularidadOptions"
+      [value]="popularidad()"
+      (valueChange)="popularidad.set($event)"
+    />
+  </app-filter-toolbar>
+
+  <div class="repos-page__main">
+    @if (isLoading()) {
+      <ul class="repos-grid" aria-label="Cargando repositorios" aria-busy="true">
+        @for (slot of skeletonSlots; track slot) {
+          <li class="repos-grid__item">
+            <div class="repo-skeleton" aria-hidden="true">
+              <div class="repo-skeleton__badge"></div>
+              <div class="repo-skeleton__lines">
+                <div class="repo-skeleton__line repo-skeleton__line--lg"></div>
+                <div class="repo-skeleton__line repo-skeleton__line--md"></div>
+                <div class="repo-skeleton__line repo-skeleton__line--sm"></div>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else if (paged(); as pageEntries) {
+      @if (pageEntries.length === 0) {
+        <div class="repos-page__empty">
+          <p>No hay repositorios que coincidan con los filtros.</p>
+          @if (hasActiveFilters()) {
+            <button type="button" class="repos-page__empty-action" (click)="onReset()">
+              Limpiar filtros
+            </button>
+          }
+        </div>
+      } @else {
+        <ul class="repos-grid">
+          @for (entry of pageEntries; track entry.repo.id) {
+            <li class="repos-grid__item">
+              <app-repository-card [repository]="entry.repo" [owner]="entry.owner" />
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+
+  @if (!isLoading() && total() > pageSize) {
+    <app-paginator
+      class="repos-page__paginator"
+      [total]="total()"
+      [pageSize]="pageSize"
+      [page]="page()"
+      (pageChange)="onPageChange($event)"
+    />
+  }
 </section>
