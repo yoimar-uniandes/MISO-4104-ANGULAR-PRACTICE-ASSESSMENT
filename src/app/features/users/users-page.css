@@ -109,39 +109,25 @@
 
 /* ── Responsive grid ─────────────────────────────────────────────────── */
 .users-grid {
-  /* Flex con justify-content:center → las cards se centran horizontalmente
-     en cada fila aunque la última no quede llena (1 sola card también). */
+  /* CSS Grid con `auto-fill + 1fr` → todos los tracks comparten la misma
+     anchura, calculada por el grid según el viewport. Una fila parcial
+     (e.g. 2 cards en grid de 3 tracks) usa los mismos tracks que una fila
+     completa: las columnas quedan alineadas verticalmente y las cards
+     llenan el ancho disponible a cada breakpoint sin huecos a la derecha. */
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
   gap: var(--space-8);
 }
 
 .users-grid__item {
-  /* `flex: 1 1 18rem` permite a las cards crecer y rellenar el ancho del
-     contenedor → cuando hay 3 cards en una fila, sus bordes coinciden con
-     los del toolbar. `max-width: 22rem` evita que una card sola se estire
-     demasiado en pantallas anchas. */
-  flex: 1 1 18rem;
-  max-width: 22rem;
   min-width: 0;
   /* Animación escalonada de entrada */
   opacity: 0;
   transform: translateY(8px);
   animation: fadeUp 420ms cubic-bezier(0.2, 0, 0, 1) forwards;
-}
-
-/* En viewports donde solo cabe 1 columna (≤ 608 px de contenedor), la card
-   se extiende al ancho completo para alinearse con los bordes laterales
-   del toolbar. */
-@media (max-width: 640px) {
-  .users-grid__item {
-    max-width: 100%;
-  }
 }
 
 .users-grid__item:nth-child(1) {
