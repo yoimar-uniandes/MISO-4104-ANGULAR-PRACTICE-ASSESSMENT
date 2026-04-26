@@ -144,7 +144,9 @@ export class RepositoriesPage {
   constructor() {
     effect(() => {
       this.filters();
-      untracked(() => { this.page.set(1); });
+      untracked(() => {
+        this.page.set(1);
+      });
     });
   }
 
