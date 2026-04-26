@@ -1,45 +1,245 @@
 :host {
-  display: block;
+  /* Llena el viewport visible debajo del navbar para que el paginator
+     quede anclado al borde inferior y el grid de cards pueda centrarse
+     verticalmente en el espacio sobrante. */
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - var(--layout-navbar-h, 4rem) - 4rem);
+
   /* Estado inicial explícito → sin FOUC en SSR */
   opacity: 0;
   transform: translateY(16px);
   animation: pageEnter 600ms cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
-.users-page__title,
-.users-page__placeholder {
-  opacity: 0;
-  transform: translateY(14px);
-  animation: fadeUp 600ms cubic-bezier(0.2, 0, 0, 1) forwards;
-}
-.users-page__title {
-  animation-delay: 100ms;
-}
-.users-page__placeholder {
-  animation-delay: 220ms;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  :host,
-  .users-page__title,
-  .users-page__placeholder {
+  :host {
     animation: none;
     opacity: 1;
     transform: none;
   }
 }
 
-.users-page__title {
-  font-size: clamp(1.75rem, 1.2rem + 1.5vw, 2.5rem);
-  margin: 0 0 0.75rem;
+.users-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
-.users-page__placeholder {
+.users-page__toolbar {
+  margin: var(--space-4) 0 0;
+}
+
+.users-page__main {
+  /* `flex: 1` empuja el paginator al fondo del viewport. Las cards quedan
+     alineadas arriba (`flex-start`) — una fila única se ve como la primera
+     fila de la grilla, no flotando en el centro vertical. */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 0;
+  /* Padding-top grande → garantiza un gap visible entre el toolbar y la
+     grid aunque haya pocas cards. */
+  padding: clamp(2rem, 5vh, 4rem) 0 var(--space-6);
+}
+
+.users-page__paginator {
+  margin-top: var(--space-2);
+  /* Negative bottom margin → el paginator queda más cerca del borde
+     inferior del viewport, recortando el padding del .layout__main. */
+  margin-bottom: calc(var(--space-3) * -1);
+  border-top: 1px solid var(--color-border);
+  /* Ligero respiro entre el hr y los botones. */
+  padding-top: var(--space-3);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────── */
+.users-page__header {
+  margin-bottom: 0;
+}
+
+.users-page__empty-action {
+  margin-top: var(--space-3);
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.users-page__empty-action:hover {
+  background: var(--c-uniandes-color-neutro-30);
+  border-color: var(--c-uniandes-color-neutro-50);
+}
+
+.users-page__empty-action:focus-visible {
+  outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
+  outline-offset: 2px;
+}
+
+.users-page__title {
+  font-size: clamp(1.75rem, 1.2rem + 1.5vw, 2.5rem);
+  margin: 0 0 0.5rem;
+}
+
+.users-page__subtitle {
   margin: 0;
-  padding: 1rem 1.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.users-page__empty {
+  margin: 0;
+  padding: var(--space-6);
   border: 1px dashed var(--color-border);
   border-radius: 0.5rem;
   background: var(--color-surface);
   color: var(--color-text-muted);
-  font-size: 0.9375rem;
+  text-align: center;
+}
+
+/* ── Responsive grid ─────────────────────────────────────────────────── */
+.users-grid {
+  /* Flex con justify-content:center → las cards se centran horizontalmente
+     en cada fila aunque la última no quede llena (1 sola card también). */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  gap: var(--space-8);
+}
+
+.users-grid__item {
+  /* `flex: 1 1 18rem` permite a las cards crecer y rellenar el ancho del
+     contenedor → cuando hay 3 cards en una fila, sus bordes coinciden con
+     los del toolbar. `max-width: 22rem` evita que una card sola se estire
+     demasiado en pantallas anchas. */
+  flex: 1 1 18rem;
+  max-width: 22rem;
+  min-width: 0;
+  /* Animación escalonada de entrada */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 420ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+/* En viewports donde solo cabe 1 columna (≤ 608 px de contenedor), la card
+   se extiende al ancho completo para alinearse con los bordes laterales
+   del toolbar. */
+@media (max-width: 640px) {
+  .users-grid__item {
+    max-width: 100%;
+  }
+}
+
+.users-grid__item:nth-child(1) {
+  animation-delay: 40ms;
+}
+.users-grid__item:nth-child(2) {
+  animation-delay: 80ms;
+}
+.users-grid__item:nth-child(3) {
+  animation-delay: 120ms;
+}
+.users-grid__item:nth-child(4) {
+  animation-delay: 160ms;
+}
+.users-grid__item:nth-child(5) {
+  animation-delay: 200ms;
+}
+.users-grid__item:nth-child(6) {
+  animation-delay: 240ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .users-grid__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Skeleton mientras carga ─────────────────────────────────────────── */
+.user-skeleton {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+}
+
+.user-skeleton__avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--c-uniandes-color-neutro-30);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-skeleton__lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.user-skeleton__line {
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--c-uniandes-color-neutro-30);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-skeleton__line--lg {
+  width: 70%;
+}
+.user-skeleton__line--md {
+  width: 50%;
+}
+.user-skeleton__line--sm {
+  width: 35%;
+}
+
+.user-skeleton__avatar::after,
+.user-skeleton__line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-skeleton__avatar::after,
+  .user-skeleton__line::after {
+    animation: none;
+  }
 }

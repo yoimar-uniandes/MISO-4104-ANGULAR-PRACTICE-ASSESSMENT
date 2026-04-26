@@ -1,6 +1,95 @@
-<section class="users-page">
-  <h1 class="users-page__title">{{ title }}</h1>
-  <p class="users-page__placeholder">
-    Implementar componente para listar usuarios. HU pendiente de iteraciones posteriores.
-  </p>
+<section class="users-page" aria-labelledby="users-page-title">
+  <header class="users-page__header">
+    <h1 id="users-page-title" class="users-page__title">{{ title }}</h1>
+    @if (!isLoading()) {
+      <p class="users-page__subtitle" aria-live="polite">
+        @if (hasActiveFilters()) {
+          {{ total() }} de {{ grandTotal() }} usuarios coinciden
+        } @else {
+          {{ total() }} usuarios en la comunidad
+        }
+      </p>
+    }
+  </header>
+
+  <app-filter-toolbar
+    class="users-page__toolbar"
+    ariaLabel="Filtros de usuarios"
+    [hasActive]="hasActiveFilters()"
+    (clear)="onReset()"
+  >
+    <app-search-input
+      ariaLabel="Buscar por nombre o usuario"
+      placeholder="Buscar por nombre o usuario…"
+      [value]="query()"
+      (valueChange)="query.set($event)"
+    />
+    <app-chips-field
+      ariaLabel="Filtrar por rol"
+      [options]="roleOptions"
+      [value]="role()"
+      (valueChange)="role.set($event)"
+    />
+    <app-select-field
+      ariaLabel="Filtrar por ubicación"
+      placeholder="Todas las ubicaciones"
+      [options]="locationOptions()"
+      [value]="location()"
+      (valueChange)="location.set($event)"
+    />
+    <app-chips-field
+      ariaLabel="Filtrar por repositorios"
+      [options]="hasReposOptions"
+      [value]="hasRepos()"
+      (valueChange)="hasRepos.set($event)"
+    />
+  </app-filter-toolbar>
+
+  <div class="users-page__main">
+    @if (isLoading()) {
+      <ul class="users-grid" aria-label="Cargando usuarios" aria-busy="true">
+        @for (slot of skeletonSlots; track slot) {
+          <li class="users-grid__item">
+            <div class="user-skeleton" aria-hidden="true">
+              <div class="user-skeleton__avatar"></div>
+              <div class="user-skeleton__lines">
+                <div class="user-skeleton__line user-skeleton__line--lg"></div>
+                <div class="user-skeleton__line user-skeleton__line--md"></div>
+                <div class="user-skeleton__line user-skeleton__line--sm"></div>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else if (paged(); as pageUsers) {
+      @if (pageUsers.length === 0) {
+        <div class="users-page__empty">
+          <p>No hay usuarios que coincidan con los filtros.</p>
+          @if (hasActiveFilters()) {
+            <button type="button" class="users-page__empty-action" (click)="onReset()">
+              Limpiar filtros
+            </button>
+          }
+        </div>
+      } @else {
+        <ul class="users-grid">
+          @for (user of pageUsers; track user.id) {
+            <li class="users-grid__item">
+              <app-user-card [user]="user" />
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+
+  @if (!isLoading() && total() > pageSize) {
+    <app-paginator
+      class="users-page__paginator"
+      [total]="total()"
+      [pageSize]="pageSize"
+      [page]="page()"
+      (pageChange)="onPageChange($event)"
+    />
+  }
 </section>

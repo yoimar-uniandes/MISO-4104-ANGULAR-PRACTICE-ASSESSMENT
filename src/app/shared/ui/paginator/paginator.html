@@ -1,0 +1,42 @@
+<button
+  type="button"
+  class="paginator__btn paginator__btn--nav"
+  (click)="prev()"
+  [disabled]="!canPrev()"
+  aria-label="Página anterior"
+>
+  <span aria-hidden="true">&lsaquo;</span>
+  <span class="paginator__btn-label">Anterior</span>
+</button>
+
+<ul class="paginator__list">
+  @for (item of pages(); track $index) {
+    @if (item === 'gap') {
+      <li class="paginator__gap" aria-hidden="true">…</li>
+    } @else {
+      <li>
+        <button
+          type="button"
+          class="paginator__btn paginator__btn--page"
+          [class.paginator__btn--active]="item === current()"
+          [attr.aria-current]="item === current() ? 'page' : null"
+          [attr.aria-label]="'Ir a la página ' + item"
+          (click)="goTo(item)"
+        >
+          {{ item }}
+        </button>
+      </li>
+    }
+  }
+</ul>
+
+<button
+  type="button"
+  class="paginator__btn paginator__btn--nav"
+  (click)="next()"
+  [disabled]="!canNext()"
+  aria-label="Página siguiente"
+>
+  <span class="paginator__btn-label">Siguiente</span>
+  <span aria-hidden="true">&rsaquo;</span>
+</button>
