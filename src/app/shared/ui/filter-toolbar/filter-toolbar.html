@@ -1,0 +1,23 @@
+<div class="filter-toolbar__fields">
+  <ng-content />
+</div>
+
+<button
+  type="button"
+  class="filter-toolbar__reset"
+  [class.filter-toolbar__reset--hidden]="!hasActive()"
+  [attr.aria-hidden]="!hasActive() ? 'true' : null"
+  [attr.tabindex]="!hasActive() ? -1 : null"
+  (click)="onClear()"
+>
+  <svg class="filter-toolbar__reset-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path
+      d="M18 6 6 18M6 6l12 12"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+  </svg>
+  {{ resetLabel() }}
+</button>

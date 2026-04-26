@@ -1,0 +1,91 @@
+:host {
+  display: block;
+  flex: 1 1 16rem;
+  min-width: 12rem;
+}
+
+.search-input__wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input__icon {
+  position: absolute;
+  left: 0.625rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--c-uniandes-color-neutro-70);
+  pointer-events: none;
+}
+
+.search-input__control {
+  width: 100%;
+  height: 2.25rem;
+  padding: 0 2rem 0 2.25rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.search-input__control::placeholder {
+  color: var(--color-text-disabled);
+}
+
+.search-input__control:hover {
+  border-color: var(--c-uniandes-color-neutro-50);
+}
+
+.search-input__control:focus-visible {
+  outline: none;
+  border-color: var(--c-border-secondary-default-lightbg);
+  box-shadow: 0 0 0 2px var(--c-uniandes-color-secondary-01-lightbg);
+}
+
+/* Oculta la X nativa que añaden algunos navegadores en input[type=search]. */
+.search-input__control::-webkit-search-decoration,
+.search-input__control::-webkit-search-cancel-button,
+.search-input__control::-webkit-search-results-button,
+.search-input__control::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-input__clear {
+  position: absolute;
+  right: 0.375rem;
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.search-input__clear:hover {
+  background: var(--c-uniandes-color-neutro-30);
+  color: var(--color-text);
+}
+
+.search-input__clear:focus-visible {
+  outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
+  outline-offset: 1px;
+}
+
+.search-input__clear svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}

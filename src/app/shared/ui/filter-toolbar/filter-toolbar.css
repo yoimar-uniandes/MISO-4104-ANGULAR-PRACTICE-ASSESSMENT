@@ -1,0 +1,74 @@
+:host {
+  display: flex;
+  /* Top-aligned: el botón "Limpiar filtros" queda arriba a la derecha,
+     en línea con la primera fila de filtros, sin importar si los campos
+     se envuelven a varias filas. */
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+}
+
+.filter-toolbar__fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-toolbar__reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  margin-left: auto;
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.filter-toolbar__reset:hover {
+  background: var(--c-uniandes-color-neutro-30);
+  border-color: var(--c-uniandes-color-neutro-50);
+}
+
+.filter-toolbar__reset:focus-visible {
+  outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
+  outline-offset: 2px;
+}
+
+/* Reservamos el espacio del botón aunque no haya filtros activos para que
+   no haya saltos de layout cuando aparece/desaparece. */
+.filter-toolbar__reset--hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.filter-toolbar__reset-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+@media (max-width: 640px) {
+  .filter-toolbar__reset {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}

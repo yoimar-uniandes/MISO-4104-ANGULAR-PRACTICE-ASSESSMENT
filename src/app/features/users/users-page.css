@@ -1,7 +1,7 @@
 :host {
-  /* Llena la altura visible debajo del navbar y del padding vertical
-     de .layout__main (2rem * 2). El paginator queda anclado al final
-     del viewport y el contenido (header + grid) se centra verticalmente. */
+  /* Llena el viewport visible debajo del navbar para que el paginator
+     quede anclado al borde inferior y el grid de cards pueda centrarse
+     verticalmente en el espacio sobrante. */
   display: flex;
   flex-direction: column;
   min-height: calc(100dvh - var(--layout-navbar-h, 4rem) - 4rem);
@@ -27,24 +27,63 @@
   min-height: 0;
 }
 
+.users-page__toolbar {
+  margin: var(--space-4) 0 0;
+}
+
 .users-page__main {
+  /* `flex: 1` empuja el paginator al fondo del viewport. Las cards quedan
+     alineadas arriba (`flex-start`) — una fila única se ve como la primera
+     fila de la grilla, no flotando en el centro vertical. */
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* `safe center` evita que el header desaparezca por arriba si el
-     contenido no cabe verticalmente (cae a `start` en vez de clipear). */
-  justify-content: safe center;
-  gap: var(--space-6);
+  justify-content: flex-start;
   min-height: 0;
+  /* Padding-top grande → garantiza un gap visible entre el toolbar y la
+     grid aunque haya pocas cards. */
+  padding: clamp(2rem, 5vh, 4rem) 0 var(--space-6);
 }
 
 .users-page__paginator {
-  margin-top: var(--space-6);
+  margin-top: var(--space-2);
+  /* Negative bottom margin → el paginator queda más cerca del borde
+     inferior del viewport, recortando el padding del .layout__main. */
+  margin-bottom: calc(var(--space-3) * -1);
+  border-top: 1px solid var(--color-border);
+  /* Ligero respiro entre el hr y los botones. */
+  padding-top: var(--space-3);
 }
 
 /* ── Header ──────────────────────────────────────────────────────────── */
 .users-page__header {
   margin-bottom: 0;
+}
+
+.users-page__empty-action {
+  margin-top: var(--space-3);
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.users-page__empty-action:hover {
+  background: var(--c-uniandes-color-neutro-30);
+  border-color: var(--c-uniandes-color-neutro-50);
+}
+
+.users-page__empty-action:focus-visible {
+  outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
+  outline-offset: 2px;
 }
 
 .users-page__title {
@@ -70,21 +109,39 @@
 
 /* ── Responsive grid ─────────────────────────────────────────────────── */
 .users-grid {
+  /* Flex con justify-content:center → las cards se centran horizontalmente
+     en cada fila aunque la última no quede llena (1 sola card también). */
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
-  gap: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  gap: var(--space-8);
 }
 
 .users-grid__item {
-  display: block;
-  height: 100%;
+  /* `flex: 1 1 18rem` permite a las cards crecer y rellenar el ancho del
+     contenedor → cuando hay 3 cards en una fila, sus bordes coinciden con
+     los del toolbar. `max-width: 22rem` evita que una card sola se estire
+     demasiado en pantallas anchas. */
+  flex: 1 1 18rem;
+  max-width: 22rem;
+  min-width: 0;
   /* Animación escalonada de entrada */
   opacity: 0;
   transform: translateY(8px);
   animation: fadeUp 420ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+/* En viewports donde solo cabe 1 columna (≤ 608 px de contenedor), la card
+   se extiende al ancho completo para alinearse con los bordes laterales
+   del toolbar. */
+@media (max-width: 640px) {
+  .users-grid__item {
+    max-width: 100%;
+  }
 }
 
 .users-grid__item:nth-child(1) {

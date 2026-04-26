@@ -1,0 +1,11 @@
+@for (opt of options(); track $index) {
+  <button
+    type="button"
+    class="chips-field__chip"
+    [class.chips-field__chip--active]="isActive(opt)"
+    [attr.aria-pressed]="isActive(opt)"
+    (click)="onClick(opt)"
+  >
+    {{ opt.label }}
+  </button>
+}
