@@ -111,6 +111,21 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Hace que el `scrollTo(0, 0)` que dispara
+     `withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })` al
+     navegar entre rutas anime suavemente en vez de hacer un jump instantáneo.
+     También aplica a anclas y a cualquier scroll programático sin
+     `behavior` explícito. */
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 html,
 body {
   margin: 0;

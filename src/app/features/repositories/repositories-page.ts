@@ -49,18 +49,14 @@ export class RepositoriesPage {
   protected readonly pageSize = 6;
 
   /**
-   * Query param `?owner=:id` leído reactivamente desde `ActivatedRoute`.
-   * Cuando se entra desde el badge de repositorios de un `UserCard`,
-   * pre-aplica el filtro de propietario.
+   * Query params leídos reactivamente desde `ActivatedRoute`. Pre-aplica
+   * los filtros internos cuando se entra con `?owner=:id` (desde el badge
+   * de repos de un `UserCard`) o `?language=:name` (desde el chip de
+   * lenguaje de un `RepositoryCard`).
    */
-  private readonly ownerFromUrl = toSignal(
-    this.route.queryParamMap
-      .pipe
-      // Map a string | null para comparar/asignar fácilmente.
-      // (queryParamMap.get devuelve null cuando no existe).
-      (),
-    { initialValue: this.route.snapshot.queryParamMap },
-  );
+  private readonly queryParams = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
 
   /* ── Estado de filtros ─────────────────────────────────────────────── */
   protected readonly query = signal('');
@@ -157,17 +153,23 @@ export class RepositoriesPage {
   protected readonly skeletonSlots = Array.from({ length: this.pageSize }, (_, i) => i);
 
   constructor() {
-    /* Cuando se entra desde un UserCard con `?owner=:id`, sincroniza el
-       query param al filtro interno. `untracked` para no crear un loop
-       cuando el efecto siguiente lee el filtro derivado. */
+    /* Cuando se entra desde otra página con `?owner=:id` (badge de repos
+       de un UserCard) o `?language=:name` (chip de lenguaje de un
+       RepositoryCard), sincroniza los query params a los filtros internos.
+       `untracked` evita un loop con el efecto siguiente que reacciona a
+       cambios en `filters()`. */
     effect(() => {
-      const fromUrl = this.ownerFromUrl().get('owner');
-      if (fromUrl !== null) {
-        const current = untracked(() => this.ownerIdStr());
-        if (current !== fromUrl) {
-          this.ownerIdStr.set(fromUrl);
+      const params = this.queryParams();
+      const ownerParam = params.get('owner');
+      const languageParam = params.get('language');
+      untracked(() => {
+        if (ownerParam !== null && this.ownerIdStr() !== ownerParam) {
+          this.ownerIdStr.set(ownerParam);
         }
-      }
+        if (languageParam !== null && this.language() !== languageParam) {
+          this.language.set(languageParam);
+        }
+      });
     });
 
     /* Cualquier cambio en filtros nos devuelve a la página 1. */

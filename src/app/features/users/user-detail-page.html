@@ -75,12 +75,14 @@
 
       <div class="user-detail__identity">
         <p class="user-detail__eyebrow">
-          <span
+          <a
             class="user-detail__role user-detail__role--{{ u.role }}"
-            [attr.aria-label]="'Rol: ' + roleLabel()"
+            routerLink="/usuarios"
+            [queryParams]="{ role: u.role }"
+            [attr.aria-label]="'Filtrar usuarios por rol ' + roleLabel()"
           >
             {{ roleLabel() }}
-          </span>
+          </a>
         </p>
         <h1 class="user-detail__name">{{ u.name }}</h1>
         <p class="user-detail__username">&#64;{{ u.username }}</p>

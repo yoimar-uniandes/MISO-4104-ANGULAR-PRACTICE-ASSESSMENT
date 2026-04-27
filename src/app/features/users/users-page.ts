@@ -8,6 +8,7 @@ import {
   untracked,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { UserCard } from '@shared/ui/user-card/user-card';
@@ -23,6 +24,8 @@ import {
 import { Users } from './users';
 import type { Role, UserFilters } from './user';
 
+const VALID_ROLES = new Set<Role>(['admin', 'developer', 'designer']);
+
 @Component({
   selector: 'app-users-page',
   imports: [UserCard, Paginator, FilterToolbar, SearchInputField, ChipsField, SelectField],
@@ -32,9 +35,19 @@ import type { Role, UserFilters } from './user';
 })
 export class UsersPage {
   private readonly usersService = inject(Users);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly title = 'Usuarios';
   protected readonly pageSize = 6;
+
+  /**
+   * Query params leídos reactivamente desde `ActivatedRoute`. Pre-aplica
+   * los filtros internos cuando se entra con `?role=:name` (desde el chip
+   * de rol de un `UserCard`).
+   */
+  private readonly queryParams = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
 
   /* ── Estado de filtros ─────────────────────────────────────────────── */
   protected readonly query = signal('');
@@ -108,6 +121,19 @@ export class UsersPage {
   protected readonly skeletonSlots = Array.from({ length: this.pageSize }, (_, i) => i);
 
   constructor() {
+    /* Cuando se entra desde otra página con `?role=:name` (chip de rol de
+       un UserCard), sincroniza el query param al filtro interno. Validamos
+       contra `VALID_ROLES` para descartar valores arbitrarios de la URL. */
+    effect(() => {
+      const params = this.queryParams();
+      const roleParam = params.get('role');
+      untracked(() => {
+        if (roleParam !== null && VALID_ROLES.has(roleParam as Role) && this.role() !== roleParam) {
+          this.role.set(roleParam as Role);
+        }
+      });
+    });
+
     /* Cualquier cambio en filtros nos devuelve a la página 1. */
     effect(() => {
       this.filters();

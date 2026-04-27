@@ -45,6 +45,18 @@ export const routes: Routes = [
             'Repositorios destacados de la comunidad GhQuerry: lenguajes, popularidad y descripción de cada proyecto.',
         },
       },
+      {
+        path: 'repositorios/:id',
+        loadComponent: () =>
+          import('./features/repositories/repository-detail-page').then(
+            (m) => m.RepositoryDetailPage,
+          ),
+        title: 'Detalle de repositorio',
+        data: {
+          description:
+            'Perfil detallado de un repositorio GhQuerry: lenguaje, popularidad, propietario y proyectos relacionados de la comunidad.',
+        },
+      },
     ],
   },
 ];

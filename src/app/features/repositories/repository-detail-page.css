@@ -14,14 +14,14 @@
   }
 }
 
-.user-detail {
+.repo-detail {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
 }
 
 /* ── Back link ───────────────────────────────────────────────────────── */
-.user-detail__back {
+.repo-detail__back {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
@@ -41,34 +41,34 @@
     transform 160ms ease;
 }
 
-.user-detail__back:hover {
+.repo-detail__back:hover {
   color: var(--color-text);
   border-color: var(--c-uniandes-color-neutro-50);
   background: var(--color-surface);
   transform: translateX(-2px);
 }
 
-.user-detail__back:focus-visible {
+.repo-detail__back:focus-visible {
   outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
   outline-offset: 2px;
 }
 
-.user-detail__back svg {
+.repo-detail__back svg {
   width: 1rem;
   height: 1rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .user-detail__back {
+  .repo-detail__back {
     transition: none;
   }
-  .user-detail__back:hover {
+  .repo-detail__back:hover {
     transform: none;
   }
 }
 
 /* ── Hero ────────────────────────────────────────────────────────────── */
-.user-detail__hero {
+.repo-detail__hero {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: clamp(1.5rem, 4vw, 2.5rem);
@@ -81,26 +81,27 @@
 }
 
 @media (max-width: 640px) {
-  .user-detail__hero {
+  .repo-detail__hero {
     grid-template-columns: 1fr;
     text-align: center;
     justify-items: center;
   }
 }
 
-.user-detail__avatar-stage {
+.repo-detail__badge-stage {
   width: clamp(7rem, 14vw, 10rem);
   height: clamp(7rem, 14vw, 10rem);
   flex-shrink: 0;
   perspective: 800px;
 }
 
-.user-detail__avatar {
+.repo-detail__badge {
+  display: grid;
+  place-items: center;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--c-uniandes-color-neutro-30);
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  color: #fff;
   border: 4px solid var(--color-bg);
   box-shadow:
     0 0 0 1px var(--color-border),
@@ -110,45 +111,50 @@
   will-change: transform;
 }
 
-.user-detail__avatar--initials {
-  display: grid;
-  place-items: center;
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  font-weight: 700;
-  color: var(--c-uniandes-color-primarytext-lightbg);
-  background: var(--c-uniandes-color-secondary-02-lightbg);
+.repo-detail__badge svg {
+  width: 50%;
+  height: 50%;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .user-detail__avatar {
+  .repo-detail__badge {
     transition: none;
     transform: none !important;
   }
 }
 
-.user-detail__identity {
+.repo-detail__identity {
   min-width: 0;
 }
 
-.user-detail__eyebrow {
+.repo-detail__eyebrow {
   margin: 0;
 }
 
-.user-detail__role,
-.user-detail__role:visited {
+.repo-detail__lang,
+.repo-detail__lang:visited {
   display: inline-flex;
   align-items: center;
-  gap: 0.4375rem;
+  gap: 0.5rem;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.375rem 0.75rem 0.375rem 0.625rem;
+  padding: 0.375rem 0.875rem 0.375rem 0.75rem;
   border-radius: 999px;
-  border: 1px solid transparent;
+  /* Gradiente teñido por el lenguaje (`--lang-tint` lo setea el componente
+     vía `[style.--lang-tint]="languageColor()"`). 12/24% sobre `transparent`
+     mantiene legibilidad del texto en el surface del hero. */
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--lang-tint, var(--c-uniandes-color-neutro-50)) 12%, transparent) 0%,
+    color-mix(in srgb, var(--lang-tint, var(--c-uniandes-color-neutro-50)) 24%, transparent) 100%
+  );
+  color: var(--color-text);
+  border: 1px solid color-mix(in srgb, var(--lang-tint, var(--color-border)) 40%, transparent);
   white-space: nowrap;
   text-decoration: none;
-  /* Anillo arranca en 0 y se anima a un halo color del rol en hover. */
+  /* Anillo arranca en 0 y aparece con overshoot ligero en hover. */
   box-shadow: 0 0 0 0 transparent;
   transition:
     box-shadow 280ms cubic-bezier(0.34, 1.4, 0.64, 1),
@@ -157,83 +163,43 @@
     filter 200ms ease;
 }
 
-.user-detail__role::before {
-  content: '';
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.65;
-  flex-shrink: 0;
-  transition: opacity 200ms ease;
-}
-
-.user-detail__role:hover,
-.user-detail__role:focus-visible {
-  box-shadow: 0 0 0 5px var(--user-detail-role-ring, transparent);
+.repo-detail__lang:hover,
+.repo-detail__lang:focus-visible {
+  /* Halo en el color del lenguaje. */
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--lang-tint, var(--color-border)) 35%, transparent);
   transform: translateY(-1px);
   filter: brightness(0.97);
 }
 
-.user-detail__role:hover::before,
-.user-detail__role:focus-visible::before {
-  opacity: 1;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .user-detail__role,
-  .user-detail__role::before {
+  .repo-detail__lang {
     transition: none;
   }
-  .user-detail__role:hover,
-  .user-detail__role:focus-visible {
+  .repo-detail__lang:hover,
+  .repo-detail__lang:focus-visible {
     transform: none;
     filter: none;
   }
 }
 
-.user-detail__role--admin,
-.user-detail__role--admin:visited {
-  background: linear-gradient(
-    135deg,
-    var(--c-uniandes-color-secondary-02-lightbg) 0%,
-    #ffd840 100%
-  );
-  color: var(--c-uniandes-color-primarytext-lightbg);
-  border-color: var(--c-uniandes-color-secondary-01-lightbg);
-  --user-detail-role-ring: rgba(255, 228, 30, 0.45);
+.repo-detail__lang-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  display: inline-block;
+  /* El dot a opacidad completa contrasta con el bg tintado al 12–24%. */
+  background: var(--lang-tint, currentColor);
+  flex-shrink: 0;
 }
 
-.user-detail__role--developer,
-.user-detail__role--developer:visited {
-  background: linear-gradient(
-    135deg,
-    var(--c-uniandes-color-neutro-30) 0%,
-    var(--c-uniandes-color-neutro-40) 100%
-  );
-  color: var(--c-uniandes-color-primarytext-lightbg);
-  border-color: var(--c-uniandes-color-neutro-50);
-  --user-detail-role-ring: rgba(138, 137, 132, 0.35);
-}
-
-.user-detail__role--designer,
-.user-detail__role--designer:visited {
-  background: linear-gradient(135deg, rgba(36, 66, 178, 0.08) 0%, rgba(36, 66, 178, 0.18) 100%);
-  color: var(--color-accent);
-  border-color: rgba(36, 66, 178, 0.35);
-  --user-detail-role-ring: rgba(36, 66, 178, 0.3);
-}
-
-.user-detail__name {
+.repo-detail__name {
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.1;
-  margin: 0.5rem 0 0.25rem;
+  margin: 0.5rem 0 0.75rem;
   color: var(--color-text);
-  /* Franja amarilla Uniandes bajo el nombre — destaca como título focal
-     de la página de detalle. `width: fit-content` ajusta la franja al
-     ancho del texto en lugar de extenderla a todo el contenedor. */
+  /* Franja amarilla Uniandes destacando el nombre como título focal. */
   width: fit-content;
   max-width: 100%;
   background-image: linear-gradient(
@@ -246,20 +212,27 @@
 }
 
 @media (max-width: 640px) {
-  .user-detail__name {
+  .repo-detail__name {
     margin-inline: auto;
   }
 }
 
-.user-detail__username {
+.repo-detail__description {
   margin: 0;
   font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+  line-height: 1.55;
   color: var(--color-text-muted);
-  font-feature-settings: 'tnum' 1;
+  max-width: 60ch;
+}
+
+@media (max-width: 640px) {
+  .repo-detail__description {
+    margin-inline: auto;
+  }
 }
 
 /* ── Meta inline ─────────────────────────────────────────────────────── */
-.user-detail__meta {
+.repo-detail__meta {
   list-style: none;
   padding: 0;
   margin: var(--space-4) 0 0;
@@ -268,118 +241,143 @@
   gap: var(--space-2) var(--space-4);
   font-size: 0.9375rem;
   color: var(--color-text-muted);
+  align-items: center;
 }
 
-.user-detail__meta-item {
+.repo-detail__meta-item {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.5rem;
   min-width: 0;
 }
 
-.user-detail__meta-item svg {
+.repo-detail__meta-item svg {
   width: 1rem;
   height: 1rem;
   color: var(--c-uniandes-color-neutro-70);
   flex-shrink: 0;
 }
 
-.user-detail__meta-item a {
+.repo-detail__meta-item--static {
+  color: var(--color-text-muted);
+}
+
+.repo-detail__owner-link,
+.repo-detail__owner-link:visited {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.5rem;
   color: inherit;
   text-decoration: none;
   border-radius: 0.25rem;
   transition: color 160ms ease;
 }
 
-.user-detail__meta-item a:hover {
+.repo-detail__owner-link:hover,
+.repo-detail__owner-link:focus-visible {
   color: var(--color-text);
 }
 
-.user-detail__meta-item a:hover span {
+.repo-detail__owner-link:hover .repo-detail__owner-name {
   text-decoration: underline;
 }
 
-.user-detail__meta-item a:focus-visible {
+.repo-detail__owner-link:focus-visible {
   outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
   outline-offset: 2px;
 }
 
-.user-detail__meta-item--static {
-  color: var(--color-text-muted);
+.repo-detail__owner-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--c-uniandes-color-neutro-30);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+
+.repo-detail__owner-avatar--initials {
+  display: grid;
+  place-items: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--c-uniandes-color-secondary-02-lightbg);
+}
+
+.repo-detail__owner-name {
+  font-weight: 500;
+}
+
+.repo-detail__owner-unknown {
+  font-style: italic;
+  color: var(--color-text-disabled);
 }
 
 @media (max-width: 640px) {
-  .user-detail__meta {
+  .repo-detail__meta {
     justify-content: center;
   }
 }
 
-/* ── Section blocks (repos + others) ─────────────────────────────────── */
-.user-detail__section {
+/* ── Stars badge (igual que RepositoryCard, con 4 tiers) ─────────────── */
+.repo-detail__stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.repo-detail__stars--low {
+  background: var(--c-uniandes-color-neutro-30);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.repo-detail__stars--mid {
+  background: rgba(36, 66, 178, 0.08);
+  color: var(--color-accent);
+  border-color: rgba(36, 66, 178, 0.25);
+}
+.repo-detail__stars--high {
+  background: rgba(11, 115, 16, 0.1);
+  color: var(--c-uniandes-color-success-lightbg);
+  border-color: rgba(11, 115, 16, 0.3);
+}
+.repo-detail__stars--top {
+  background: var(--c-uniandes-color-secondary-02-lightbg);
+  color: var(--c-uniandes-color-primarytext-lightbg);
+  border-color: var(--c-uniandes-color-secondary-01-lightbg);
+}
+.repo-detail__stars--top svg {
+  color: var(--c-uniandes-color-alert-lightbg);
+}
+
+/* ── Section blocks (otros repos del owner / similares) ──────────────── */
+.repo-detail__section {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
 }
 
-.user-detail__section-title {
+.repo-detail__section-title {
   font-size: clamp(1.25rem, 2vw, 1.5rem);
   font-weight: 600;
   margin: 0;
   color: var(--color-text);
 }
 
-.user-detail__empty {
-  margin: 0;
-  padding: var(--space-6);
-  border: 1px dashed var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  text-align: center;
-  font-size: 0.9375rem;
-}
-
-/* ── Repos grid (mismo CSS Grid uniforme que las otras páginas) ──────── */
-.user-detail__repos-grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
-  gap: var(--space-6);
-}
-
-.user-detail__repos-item {
-  min-width: 0;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 420ms cubic-bezier(0.2, 0, 0, 1) forwards;
-}
-
-.user-detail__repos-item:nth-child(1) {
-  animation-delay: 60ms;
-}
-.user-detail__repos-item:nth-child(2) {
-  animation-delay: 120ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .user-detail__repos-item {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ── Rail horizontal de "otros usuarios" ─────────────────────────────── */
-.user-detail__rail-wrapper {
+/* ── Rail horizontal ─────────────────────────────────────────────────── */
+.repo-detail__rail-wrapper {
   position: relative;
 }
 
-.user-detail__rail {
+.repo-detail__rail {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -388,18 +386,37 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x proximity;
-  /* Scrollbar nativa oculta — la navegación del rail se hace con las
-     flechas. Mantenemos overflow auto para conservar swipe táctil y
-     scroll-wheel horizontal. */
   scrollbar-width: none;
 }
 
-.user-detail__rail::-webkit-scrollbar {
+.repo-detail__rail::-webkit-scrollbar {
   display: none;
 }
 
-/* ── Flechas de control ──────────────────────────────────────────────── */
-.user-detail__rail-arrow {
+@media (prefers-reduced-motion: reduce) {
+  .repo-detail__rail {
+    scroll-behavior: auto;
+  }
+}
+
+.repo-detail__rail-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* En viewports estrechos, una mini-card aislada llena el ancho del rail
+   en lugar de quedarse a 14rem con espacio vacío a la derecha. Si hay
+   varias mini-cards, mantienen su ancho fijo para preservar el patrón
+   de carrusel deslizable. */
+@media (max-width: 640px) {
+  .repo-detail__rail-item:only-child,
+  .repo-detail__rail-item:only-child .other-repo {
+    width: 100%;
+  }
+}
+
+/* ── Flechas de control del rail ─────────────────────────────────────── */
+.repo-detail__rail-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -423,103 +440,99 @@
     transform 160ms ease;
 }
 
-.user-detail__rail-arrow:hover:not(:disabled) {
+.repo-detail__rail-arrow:hover:not(:disabled) {
   background: var(--c-uniandes-color-secondary-01-lightbg);
   border-color: var(--c-uniandes-color-secondary-01-lightbg);
   color: var(--c-uniandes-color-primarytext-lightbg);
   transform: translateY(-50%) scale(1.06);
 }
 
-.user-detail__rail-arrow:focus-visible {
+.repo-detail__rail-arrow:focus-visible {
   outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
   outline-offset: 2px;
 }
 
-.user-detail__rail-arrow:disabled {
+.repo-detail__rail-arrow:disabled {
   opacity: 0;
   pointer-events: none;
 }
 
-.user-detail__rail-arrow svg {
+.repo-detail__rail-arrow svg {
   width: 1.125rem;
   height: 1.125rem;
 }
 
-.user-detail__rail-arrow--prev {
+.repo-detail__rail-arrow--prev {
   left: -0.5rem;
 }
 
-.user-detail__rail-arrow--next {
+.repo-detail__rail-arrow--next {
   right: -0.5rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .user-detail__rail {
-    scroll-behavior: auto;
-  }
-  .user-detail__rail-arrow {
+  .repo-detail__rail-arrow {
     transition: none;
   }
-  .user-detail__rail-arrow:hover:not(:disabled) {
+  .repo-detail__rail-arrow:hover:not(:disabled) {
     transform: translateY(-50%);
   }
 }
 
-.user-detail__rail-item {
-  scroll-snap-align: start;
-  flex-shrink: 0;
-}
-
-.other-user {
+/* ── Mini repo card del rail ─────────────────────────────────────────── */
+.other-repo {
   display: grid;
-  grid-template-rows: auto auto auto;
-  gap: 0.375rem;
-  width: 11rem;
+  grid-template-rows: auto auto auto auto;
+  gap: var(--space-2);
+  width: 14rem;
   padding: var(--space-4);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
   text-decoration: none;
   color: inherit;
-  text-align: center;
-  justify-items: center;
+  justify-items: start;
   transition:
     transform 220ms cubic-bezier(0.2, 0, 0, 1),
     border-color 220ms cubic-bezier(0.2, 0, 0, 1),
     box-shadow 220ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.other-user:hover {
+.other-repo:hover {
   transform: translateY(-2px);
   border-color: var(--c-uniandes-color-neutro-50);
   box-shadow: 0 6px 18px rgba(25, 25, 22, 0.08);
 }
 
-.other-user:focus-visible {
+.other-repo:focus-visible {
   outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .other-user {
+  .other-repo {
     transition: none;
   }
-  .other-user:hover {
+  .other-repo:hover {
     transform: none;
   }
 }
 
-.other-user__avatar {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--c-uniandes-color-neutro-30);
-  border: 2px solid var(--color-bg);
-  box-shadow: 0 0 0 1px var(--color-border);
+.other-repo__badge {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  color: #fff;
 }
 
-.other-user__name {
+.other-repo__badge svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.other-repo__name {
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-text);
@@ -529,56 +542,108 @@
   max-width: 100%;
 }
 
-.other-user__role {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 0.125rem 0.5rem;
+.other-repo__description {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  /* 2 líneas como máximo */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Owner del rail "Repositorios similares en {language}" — avatar mini +
+   nombre, alineado a la izquierda y truncado si es largo. */
+.other-repo__owner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.other-repo__owner-avatar {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--c-uniandes-color-neutro-30);
+  border: 1px solid var(--color-border);
+}
+
+.other-repo__owner-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.other-repo__stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.1875rem 0.5rem;
   border-radius: 999px;
   border: 1px solid transparent;
-  white-space: nowrap;
 }
 
-.other-user__role--admin {
-  background: var(--c-uniandes-color-secondary-02-lightbg);
-  color: var(--c-uniandes-color-primarytext-lightbg);
-  border-color: var(--c-uniandes-color-secondary-01-lightbg);
+.other-repo__stars svg {
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
-.other-user__role--developer {
+.other-repo__stars--low {
   background: var(--c-uniandes-color-neutro-30);
-  color: var(--c-uniandes-color-primarytext-lightbg);
+  color: var(--color-text);
   border-color: var(--color-border);
 }
-
-.other-user__role--designer {
+.other-repo__stars--mid {
   background: rgba(36, 66, 178, 0.08);
   color: var(--color-accent);
   border-color: rgba(36, 66, 178, 0.25);
 }
+.other-repo__stars--high {
+  background: rgba(11, 115, 16, 0.1);
+  color: var(--c-uniandes-color-success-lightbg);
+  border-color: rgba(11, 115, 16, 0.3);
+}
+.other-repo__stars--top {
+  background: var(--c-uniandes-color-secondary-02-lightbg);
+  color: var(--c-uniandes-color-primarytext-lightbg);
+  border-color: var(--c-uniandes-color-secondary-01-lightbg);
+}
+.other-repo__stars--top svg {
+  color: var(--c-uniandes-color-alert-lightbg);
+}
 
 /* ── Skeleton del hero ───────────────────────────────────────────────── */
-.user-detail__hero--skeleton {
+.repo-detail__hero--skeleton {
   pointer-events: none;
 }
 
-.user-detail__avatar-skeleton {
+.repo-detail__badge-skeleton {
   width: clamp(7rem, 14vw, 10rem);
   height: clamp(7rem, 14vw, 10rem);
-  border-radius: 50%;
+  border-radius: clamp(1rem, 2vw, 1.5rem);
   background: var(--c-uniandes-color-neutro-30);
   position: relative;
   overflow: hidden;
 }
 
-.user-detail__skeleton-lines {
+.repo-detail__skeleton-lines {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-.user-detail__skeleton-line {
+.repo-detail__skeleton-line {
   height: 1rem;
   border-radius: 0.25rem;
   background: var(--c-uniandes-color-neutro-30);
@@ -586,20 +651,20 @@
   overflow: hidden;
 }
 
-.user-detail__skeleton-line--lg {
+.repo-detail__skeleton-line--lg {
   width: 60%;
   height: 2rem;
 }
-.user-detail__skeleton-line--md {
-  width: 30%;
+.repo-detail__skeleton-line--md {
+  width: 80%;
 }
-.user-detail__skeleton-line--sm {
+.repo-detail__skeleton-line--sm {
   width: 45%;
   height: 0.875rem;
 }
 
-.user-detail__avatar-skeleton::after,
-.user-detail__skeleton-line::after {
+.repo-detail__badge-skeleton::after,
+.repo-detail__skeleton-line::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -614,14 +679,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .user-detail__avatar-skeleton::after,
-  .user-detail__skeleton-line::after {
+  .repo-detail__badge-skeleton::after,
+  .repo-detail__skeleton-line::after {
     animation: none;
   }
 }
 
 /* ── Not found ───────────────────────────────────────────────────────── */
-.user-detail__not-found {
+.repo-detail__not-found {
   text-align: center;
   padding: var(--space-8) var(--space-4);
   background: var(--color-surface);
@@ -629,17 +694,17 @@
   border-radius: 0.75rem;
 }
 
-.user-detail__not-found h1 {
+.repo-detail__not-found h1 {
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin: 0 0 var(--space-2);
 }
 
-.user-detail__not-found p {
+.repo-detail__not-found p {
   margin: 0 0 var(--space-4);
   color: var(--color-text-muted);
 }
 
-.user-detail__cta {
+.repo-detail__cta {
   display: inline-block;
   padding: 0.625rem 1.25rem;
   font-weight: 500;
@@ -654,13 +719,13 @@
     transform 160ms ease;
 }
 
-.user-detail__cta:hover {
+.repo-detail__cta:hover {
   background: var(--c-uniandes-color-secondary-01-lightbg);
   color: var(--c-uniandes-color-primarytext-lightbg);
   transform: translateY(-1px);
 }
 
-.user-detail__cta:focus-visible {
+.repo-detail__cta:focus-visible {
   outline: 2px solid var(--c-uniandes-color-secondary-01-lightbg);
   outline-offset: 2px;
 }

@@ -28,6 +28,20 @@ export const serverRoutes: ServerRoute[] = [
     },
   },
   {
+    path: 'repositorios/:id',
+    renderMode: RenderMode.Prerender,
+    getPrerenderParams: async () => {
+      const response = await fetch(environment.apis.repositories);
+      if (!response.ok) {
+        throw new Error(
+          'Failed to fetch repositories for prerender: HTTP ' + String(response.status),
+        );
+      }
+      const repos = (await response.json()) as ReadonlyArray<{ id: number }>;
+      return repos.map((r) => ({ id: String(r.id) }));
+    },
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender,
   },

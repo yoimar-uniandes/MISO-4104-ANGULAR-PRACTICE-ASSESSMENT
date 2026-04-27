@@ -52,7 +52,8 @@
 .user-card__location,
 .user-card__email,
 .user-card__avatar-stage,
-.user-card__repos {
+.user-card__repos,
+.user-card__role {
   position: relative;
   z-index: 3;
   pointer-events: auto;
@@ -165,34 +166,97 @@
 }
 
 /* ── Role chip ───────────────────────────────────────────────────────── */
-.user-card__role {
+.user-card__role,
+.user-card__role:visited {
   align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
   font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.25rem 0.5rem;
+  padding: 0.3125rem 0.625rem 0.3125rem 0.5rem;
   border-radius: 999px;
   border: 1px solid transparent;
   white-space: nowrap;
+  text-decoration: none;
+  /* `box-shadow` arranca en 0 transparente y se anima a un anillo en hover.
+     `cubic-bezier(0.34, 1.4, 0.64, 1)` da un ligero overshoot al aparecer
+     el anillo, como si "pop"-eara desde el chip. */
+  box-shadow: 0 0 0 0 transparent;
+  transition:
+    box-shadow 280ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    transform 200ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 200ms ease,
+    filter 200ms ease;
 }
 
-.user-card__role--admin {
-  background: var(--c-uniandes-color-secondary-02-lightbg);
+/* Glyph circular pequeño antes del label — refuerza identidad visual del rol. */
+.user-card__role::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.user-card__role:hover,
+.user-card__role:focus-visible {
+  box-shadow: 0 0 0 4px var(--user-card-role-ring, transparent);
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+
+.user-card__role:hover::before,
+.user-card__role:focus-visible::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-card__role {
+    transition: none;
+  }
+  .user-card__role:hover,
+  .user-card__role:focus-visible {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ── Variantes por rol con gradiente sutil + halo de hover propio ────── */
+.user-card__role--admin,
+.user-card__role--admin:visited {
+  background: linear-gradient(
+    135deg,
+    var(--c-uniandes-color-secondary-02-lightbg) 0%,
+    #ffd840 100%
+  );
   color: var(--c-uniandes-color-primarytext-lightbg);
   border-color: var(--c-uniandes-color-secondary-01-lightbg);
+  --user-card-role-ring: rgba(255, 228, 30, 0.45);
 }
 
-.user-card__role--developer {
-  background: var(--c-uniandes-color-neutro-30);
+.user-card__role--developer,
+.user-card__role--developer:visited {
+  background: linear-gradient(
+    135deg,
+    var(--c-uniandes-color-neutro-30) 0%,
+    var(--c-uniandes-color-neutro-40) 100%
+  );
   color: var(--c-uniandes-color-primarytext-lightbg);
-  border-color: var(--color-border);
+  border-color: var(--c-uniandes-color-neutro-50);
+  --user-card-role-ring: rgba(138, 137, 132, 0.35);
 }
 
-.user-card__role--designer {
-  background: rgba(36, 66, 178, 0.08);
+.user-card__role--designer,
+.user-card__role--designer:visited {
+  background: linear-gradient(135deg, rgba(36, 66, 178, 0.08) 0%, rgba(36, 66, 178, 0.18) 100%);
   color: var(--color-accent);
-  border-color: rgba(36, 66, 178, 0.25);
+  border-color: rgba(36, 66, 178, 0.35);
+  --user-card-role-ring: rgba(36, 66, 178, 0.3);
 }
 
 /* ── Meta (location + email) ─────────────────────────────────────────── */
