@@ -1,0 +1,224 @@
+<section class="user-detail" aria-busy="false">
+  <a routerLink="/usuarios" class="user-detail__back">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M15 18l-6-6 6-6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    Volver a usuarios
+  </a>
+
+  @if (isLoading()) {
+    <div class="user-detail__hero user-detail__hero--skeleton" aria-hidden="true">
+      <div class="user-detail__avatar-skeleton"></div>
+      <div class="user-detail__skeleton-lines">
+        <div class="user-detail__skeleton-line user-detail__skeleton-line--lg"></div>
+        <div class="user-detail__skeleton-line user-detail__skeleton-line--md"></div>
+        <div class="user-detail__skeleton-line user-detail__skeleton-line--sm"></div>
+      </div>
+    </div>
+  } @else if (notFound()) {
+    <div class="user-detail__not-found">
+      <h1>Usuario no encontrado</h1>
+      <p>El usuario solicitado no existe o ha sido eliminado.</p>
+      <a routerLink="/usuarios" class="user-detail__cta">Ver todos los usuarios</a>
+    </div>
+  } @else if (user(); as u) {
+    <header class="user-detail__hero">
+      <div
+        class="user-detail__avatar-stage"
+        (mousemove)="onAvatarMove($event)"
+        (mouseleave)="onAvatarLeave()"
+      >
+        @if (avatarFailed()) {
+          <div
+            class="user-detail__avatar user-detail__avatar--initials"
+            [style.transform]="
+              'rotateX(' +
+              tilt().x +
+              'deg) rotateY(' +
+              tilt().y +
+              'deg) scale(' +
+              tilt().scale +
+              ')'
+            "
+            aria-hidden="true"
+          >
+            {{ initials() }}
+          </div>
+        } @else {
+          <img
+            class="user-detail__avatar"
+            [src]="u.avatarUrl"
+            [alt]="'Avatar de ' + u.name"
+            [style.transform]="
+              'rotateX(' +
+              tilt().x +
+              'deg) rotateY(' +
+              tilt().y +
+              'deg) scale(' +
+              tilt().scale +
+              ')'
+            "
+            width="160"
+            height="160"
+            decoding="async"
+            (error)="onAvatarError()"
+          />
+        }
+      </div>
+
+      <div class="user-detail__identity">
+        <p class="user-detail__eyebrow">
+          <span
+            class="user-detail__role user-detail__role--{{ u.role }}"
+            [attr.aria-label]="'Rol: ' + roleLabel()"
+          >
+            {{ roleLabel() }}
+          </span>
+        </p>
+        <h1 class="user-detail__name">{{ u.name }}</h1>
+        <p class="user-detail__username">&#64;{{ u.username }}</p>
+
+        <ul class="user-detail__meta">
+          <li class="user-detail__meta-item">
+            <a
+              [href]="mapsUrl()"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="'Ver ' + u.location + ' en Google Maps (nueva pestaña)'"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"
+                  fill="currentColor"
+                />
+              </svg>
+              <span>{{ u.location }}</span>
+            </a>
+          </li>
+          <li class="user-detail__meta-item">
+            <a [href]="'mailto:' + u.email" [title]="u.email">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 4.4V18h16V8.4l-8 5-8-5z"
+                  fill="currentColor"
+                />
+              </svg>
+              <span>{{ u.email }}</span>
+            </a>
+          </li>
+          <li class="user-detail__meta-item user-detail__meta-item--static">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M7 3a2 2 0 0 0-2 2v15a1 1 0 0 0 1.5.87L12 17.6l5.5 3.27A1 1 0 0 0 19 20V5a2 2 0 0 0-2-2H7zm0 2h10v13.27l-4.5-2.68a1 1 0 0 0-1 0L7 18.27V5z"
+                fill="currentColor"
+              />
+            </svg>
+            <span>{{ reposLabel() }}</span>
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="user-detail__section" aria-labelledby="user-detail-repos-title">
+      <h2 id="user-detail-repos-title" class="user-detail__section-title">
+        Repositorios mantenidos
+      </h2>
+      @if (userRepos().length === 0) {
+        <p class="user-detail__empty">
+          {{ u.name }} todavía no tiene repositorios públicos en GhQuerry.
+        </p>
+      } @else {
+        <ul class="user-detail__repos-grid">
+          @for (repo of userRepos(); track repo.id) {
+            <li class="user-detail__repos-item">
+              <app-repository-card [repository]="repo" [owner]="u" />
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    @if (otherUsers().length > 0) {
+      <section class="user-detail__section" aria-labelledby="user-detail-others-title">
+        <h2 id="user-detail-others-title" class="user-detail__section-title">
+          Otros developers de la comunidad
+        </h2>
+        <div class="user-detail__rail-wrapper">
+          <button
+            type="button"
+            class="user-detail__rail-arrow user-detail__rail-arrow--prev"
+            (click)="scrollRailPrev()"
+            [disabled]="!canScrollPrev()"
+            aria-label="Ver developers anteriores"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <ul
+            #railEl
+            class="user-detail__rail"
+            aria-label="Otros developers"
+            (scroll)="onRailScroll()"
+          >
+            @for (other of otherUsers(); track other.id) {
+              <li class="user-detail__rail-item">
+                <a
+                  [routerLink]="['/usuarios', other.id]"
+                  class="other-user"
+                  [attr.aria-label]="'Ver detalle de ' + other.name"
+                >
+                  <img
+                    class="other-user__avatar"
+                    [src]="other.avatarUrl"
+                    [alt]=""
+                    width="56"
+                    height="56"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="other-user__name">{{ other.name }}</span>
+                  <span class="other-user__role other-user__role--{{ other.role }}">
+                    {{ roleOf(other) }}
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+          <button
+            type="button"
+            class="user-detail__rail-arrow user-detail__rail-arrow--next"
+            (click)="scrollRailNext()"
+            [disabled]="!canScrollNext()"
+            aria-label="Ver más developers"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M9 6l6 6-6 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </section>
+    }
+  }
+</section>

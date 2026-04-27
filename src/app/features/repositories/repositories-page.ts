@@ -8,6 +8,7 @@ import {
   untracked,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { RepositoryCard } from '@shared/ui/repository-card/repository-card';
@@ -42,9 +43,24 @@ const POPULARITY_THRESHOLD = 100;
 export class RepositoriesPage {
   private readonly reposService = inject(Repositories);
   private readonly usersService = inject(Users);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly title = 'Repositorios';
   protected readonly pageSize = 6;
+
+  /**
+   * Query param `?owner=:id` leído reactivamente desde `ActivatedRoute`.
+   * Cuando se entra desde el badge de repositorios de un `UserCard`,
+   * pre-aplica el filtro de propietario.
+   */
+  private readonly ownerFromUrl = toSignal(
+    this.route.queryParamMap
+      .pipe
+      // Map a string | null para comparar/asignar fácilmente.
+      // (queryParamMap.get devuelve null cuando no existe).
+      (),
+    { initialValue: this.route.snapshot.queryParamMap },
+  );
 
   /* ── Estado de filtros ─────────────────────────────────────────────── */
   protected readonly query = signal('');
@@ -110,14 +126,13 @@ export class RepositoriesPage {
   });
 
   protected readonly ownerOptions = computed<ReadonlyArray<SelectOption<string>>>(() => {
-    const repos = this.allRepos();
     const users = this.allUsers();
-    if (!repos || !users) return [];
-    const ownerIds = new Set<number>();
-    for (const r of repos) ownerIds.add(r.ownerId);
-    return Array.from(ownerIds)
-      .map((id) => users.find((u) => u.id === id))
-      .filter((u): u is User => u !== undefined)
+    if (!users) return [];
+    /* Incluimos a TODOS los usuarios — incluso los que no mantienen
+       repositorios — para que el filtro pueda seleccionarlos (entrada
+       desde el badge "Sin repositorios" del UserCard) y el SelectField
+       muestre el label correcto. */
+    return [...users]
       .sort((a, b) => a.name.localeCompare(b.name, 'es'))
       .map((u) => ({ value: String(u.id), label: u.name }));
   });
@@ -142,6 +157,20 @@ export class RepositoriesPage {
   protected readonly skeletonSlots = Array.from({ length: this.pageSize }, (_, i) => i);
 
   constructor() {
+    /* Cuando se entra desde un UserCard con `?owner=:id`, sincroniza el
+       query param al filtro interno. `untracked` para no crear un loop
+       cuando el efecto siguiente lee el filtro derivado. */
+    effect(() => {
+      const fromUrl = this.ownerFromUrl().get('owner');
+      if (fromUrl !== null) {
+        const current = untracked(() => this.ownerIdStr());
+        if (current !== fromUrl) {
+          this.ownerIdStr.set(fromUrl);
+        }
+      }
+    });
+
+    /* Cualquier cambio en filtros nos devuelve a la página 1. */
     effect(() => {
       this.filters();
       untracked(() => {

@@ -26,6 +26,16 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'usuarios/:id',
+        loadComponent: () =>
+          import('./features/users/user-detail-page').then((m) => m.UserDetailPage),
+        title: 'Detalle de usuario',
+        data: {
+          description:
+            'Perfil detallado de un developer GhQuerry: información de contacto, repositorios mantenidos y comunidad relacionada.',
+        },
+      },
+      {
         path: 'repositorios',
         loadComponent: () =>
           import('./features/repositories/repositories-page').then((m) => m.RepositoriesPage),

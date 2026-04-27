@@ -42,26 +42,32 @@
       <dt class="repo-card__meta-label">Propietario</dt>
       <dd class="repo-card__meta-value">
         @if (owner(); as o) {
-          @if (avatarFailed()) {
-            <span
-              class="repo-card__owner-avatar repo-card__owner-avatar--initials"
-              aria-hidden="true"
-            >
-              {{ ownerInitials() }}
-            </span>
-          } @else {
-            <img
-              class="repo-card__owner-avatar"
-              [src]="o.avatarUrl"
-              [alt]="'Avatar de ' + o.name"
-              width="20"
-              height="20"
-              loading="lazy"
-              decoding="async"
-              (error)="onOwnerAvatarError()"
-            />
-          }
-          <span>{{ o.name }}</span>
+          <a
+            class="repo-card__owner-link"
+            [routerLink]="['/usuarios', o.id]"
+            [attr.aria-label]="'Ver perfil de ' + o.name"
+          >
+            @if (avatarFailed()) {
+              <span
+                class="repo-card__owner-avatar repo-card__owner-avatar--initials"
+                aria-hidden="true"
+              >
+                {{ ownerInitials() }}
+              </span>
+            } @else {
+              <img
+                class="repo-card__owner-avatar"
+                [src]="o.avatarUrl"
+                [alt]=""
+                width="20"
+                height="20"
+                loading="lazy"
+                decoding="async"
+                (error)="onOwnerAvatarError()"
+              />
+            }
+            <span class="repo-card__owner-name">{{ o.name }}</span>
+          </a>
         } @else {
           <span class="repo-card__owner-unknown">Propietario desconocido</span>
         }
