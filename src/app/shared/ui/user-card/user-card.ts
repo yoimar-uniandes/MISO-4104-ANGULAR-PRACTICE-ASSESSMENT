@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import type { Role, User } from '@features/users/user';
 
 const ROLE_LABEL: Readonly<Record<Role, string>> = {
@@ -20,6 +21,7 @@ const AVATAR_MIN_SCALE = 1.104;
 
 @Component({
   selector: 'app-user-card',
+  imports: [RouterLink],
   templateUrl: './user-card.html',
   styleUrl: './user-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,4 +1,9 @@
 <article class="user-card" [attr.aria-labelledby]="'user-' + user().id + '-name'">
+  <a
+    class="user-card__link"
+    [routerLink]="['/usuarios', user().id]"
+    [attr.aria-label]="'Ver detalle de ' + user().name"
+  ></a>
   <header class="user-card__header">
     <div
       class="user-card__avatar-stage"
@@ -35,12 +40,14 @@
       <h3 [id]="'user-' + user().id + '-name'" class="user-card__name">{{ user().name }}</h3>
       <p class="user-card__username">&#64;{{ user().username }}</p>
     </div>
-    <span
+    <a
       class="user-card__role user-card__role--{{ user().role }}"
-      [attr.aria-label]="'Rol: ' + roleLabel()"
+      routerLink="/usuarios"
+      [queryParams]="{ role: user().role }"
+      [attr.aria-label]="'Filtrar usuarios por rol ' + roleLabel()"
     >
       {{ roleLabel() }}
-    </span>
+    </a>
   </header>
 
   <dl class="user-card__meta">
@@ -81,7 +88,13 @@
   </dl>
 
   <footer class="user-card__footer">
-    <span class="user-card__repos" [class.user-card__repos--empty]="user().repoIds.length === 0">
+    <a
+      class="user-card__repos"
+      [class.user-card__repos--empty]="user().repoIds.length === 0"
+      routerLink="/repositorios"
+      [queryParams]="{ owner: user().id }"
+      [attr.aria-label]="'Ver ' + repoLabel() + ' de ' + user().name"
+    >
       <svg class="user-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path
           d="M7 3a2 2 0 0 0-2 2v15a1 1 0 0 0 1.5.87L12 17.6l5.5 3.27A1 1 0 0 0 19 20V5a2 2 0 0 0-2-2H7zm0 2h10v13.27l-4.5-2.68a1 1 0 0 0-1 0L7 18.27V5z"
@@ -89,6 +102,6 @@
         />
       </svg>
       {{ repoLabel() }}
-    </span>
+    </a>
   </footer>
 </article>
