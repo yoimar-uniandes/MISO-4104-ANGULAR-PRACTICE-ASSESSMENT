@@ -1,6 +1,6 @@
 {
   "name": "miso-4104-angular-practice-assessment",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
