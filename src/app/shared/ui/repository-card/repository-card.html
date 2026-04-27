@@ -1,4 +1,9 @@
 <article class="repo-card" [attr.aria-labelledby]="'repo-' + repository().id + '-name'">
+  <a
+    class="repo-card__link"
+    [routerLink]="['/repositorios', repository().id]"
+    [attr.aria-label]="'Ver detalle de ' + repository().name"
+  ></a>
   <header class="repo-card__header">
     <div
       class="repo-card__badge-stage"
@@ -27,14 +32,16 @@
       </h3>
       <p class="repo-card__description">{{ repository().description }}</p>
     </div>
-    <span class="repo-card__lang" [attr.aria-label]="'Lenguaje: ' + repository().language">
-      <span
-        class="repo-card__lang-dot"
-        [style.background-color]="languageColor()"
-        aria-hidden="true"
-      ></span>
+    <a
+      class="repo-card__lang"
+      routerLink="/repositorios"
+      [queryParams]="{ language: repository().language }"
+      [style.--lang-tint]="languageColor()"
+      [attr.aria-label]="'Filtrar repositorios por ' + repository().language"
+    >
+      <span class="repo-card__lang-dot" aria-hidden="true"></span>
       {{ repository().language }}
-    </span>
+    </a>
   </header>
 
   <dl class="repo-card__meta">
