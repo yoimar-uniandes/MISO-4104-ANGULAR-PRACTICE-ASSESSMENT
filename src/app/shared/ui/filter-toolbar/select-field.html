@@ -1,13 +1,8 @@
 <div class="select-field__wrap">
-  <select
-    class="select-field__control"
-    [value]="value() ?? ''"
-    [attr.aria-label]="ariaLabel()"
-    (change)="onChange($event)"
-  >
-    <option value="">{{ placeholder() }}</option>
+  <select class="select-field__control" [attr.aria-label]="ariaLabel()" (change)="onChange($event)">
+    <option value="" [selected]="value() === null">{{ placeholder() }}</option>
     @for (opt of options(); track $index) {
-      <option [value]="opt.value">{{ opt.label }}</option>
+      <option [value]="opt.value" [selected]="opt.value === value()">{{ opt.label }}</option>
     }
   </select>
   <svg class="select-field__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">

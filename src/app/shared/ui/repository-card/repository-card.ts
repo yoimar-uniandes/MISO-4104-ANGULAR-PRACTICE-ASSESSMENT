@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import type { Repository } from '@features/repositories/repository';
 import type { User } from '@features/users/user';
 
@@ -45,6 +46,7 @@ const BADGE_MIN_SCALE = 1.104;
 
 @Component({
   selector: 'app-repository-card',
+  imports: [RouterLink],
   templateUrl: './repository-card.html',
   styleUrl: './repository-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
